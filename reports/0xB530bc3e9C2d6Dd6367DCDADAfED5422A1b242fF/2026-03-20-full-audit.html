@@ -1,0 +1,1377 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DeFiSense — Portfolio Audit</title>
+<link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;700&family=Geist:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ══════════════════════════════════════════════════════
+   DESIGN SYSTEM v2 — Soft, readable, Claude-like tones
+   Light/Dark mode via [data-theme] attribute
+══════════════════════════════════════════════════════ */
+
+/* ── DARK THEME (default) ── */
+[data-theme="dark"] {
+  --bg:       #0f0f11;
+  --bg2:      #17181c;
+  --bg3:      #1e1f25;
+  --bg4:      #25262e;
+  --border:   #2a2b35;
+  --border2:  #353647;
+  --text:     #e8e9f0;
+  --text2:    #8b8fa8;
+  --text3:    #55576e;
+  --accent:   #7c6af7;     /* soft violet — primary */
+  --accent2:  #5bb8f5;     /* sky blue — secondary */
+  --success:  #4ade80;     /* soft green */
+  --warn:     #f59e0b;     /* amber */
+  --danger:   #f87171;     /* soft red */
+  --tag-bg:   rgba(124,106,247,0.12);
+  --tag-text: #a89cf9;
+}
+
+/* ── LIGHT THEME ── */
+[data-theme="light"] {
+  --bg:       #f7f7f9;
+  --bg2:      #ffffff;
+  --bg3:      #f0f0f4;
+  --bg4:      #e8e8ef;
+  --border:   #e2e2ea;
+  --border2:  #d0d0dc;
+  --text:     #1a1a2e;
+  --text2:    #5a5a78;
+  --text3:    #9090aa;
+  --accent:   #5b4de0;
+  --accent2:  #2e7dd1;
+  --success:  #16a34a;
+  --warn:     #d97706;
+  --danger:   #dc2626;
+  --tag-bg:   rgba(91,77,224,0.08);
+  --tag-text: #5b4de0;
+}
+
+:root {
+  --mono: 'Geist Mono', 'Courier New', monospace;
+  --sans: 'Geist', -apple-system, BlinkMacSystemFont, sans-serif;
+  --r: 10px;
+  --r2: 14px;
+  --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.05);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { transition: background 0.25s, color 0.25s; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+  font-size: 14px;
+  line-height: 1.65;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 4px; }
+
+/* ── LAYOUT ── */
+.page { max-width: 1160px; margin: 0 auto; padding: 36px 24px 96px; }
+
+/* ══════════════════════════════════════════════
+   HEADER
+══════════════════════════════════════════════ */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 28px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 40px;
+}
+.brand { display: flex; align-items: center; gap: 10px; }
+.brand-icon {
+  width: 32px; height: 32px;
+  background: var(--accent);
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px;
+}
+.brand-name { font-size: 17px; font-weight: 600; letter-spacing: -0.3px; }
+.brand-sub { font-size: 11px; color: var(--text3); letter-spacing: 0.5px; margin-top: 1px; }
+
+.header-right { display: flex; align-items: center; gap: 12px; }
+
+/* Theme toggle */
+.theme-toggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 4px;
+  cursor: pointer;
+}
+.theme-btn {
+  width: 28px; height: 28px;
+  border-radius: 16px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px;
+  border: none;
+  cursor: pointer;
+  background: transparent;
+  color: var(--text3);
+  transition: all 0.15s;
+}
+.theme-btn.active {
+  background: var(--bg2);
+  color: var(--text);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+}
+
+.wallet-chip {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text2);
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  padding: 5px 12px;
+  border-radius: 20px;
+}
+.report-dt { font-size: 11px; color: var(--text3); }
+
+/* ══════════════════════════════════════════════
+   SECTION
+══════════════════════════════════════════════ */
+.section { margin-bottom: 52px; }
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+.section-num {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--text3);
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  padding: 2px 8px;
+  border-radius: 4px;
+  letter-spacing: 1px;
+}
+.section-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+  letter-spacing: -0.2px;
+}
+.section-line { flex: 1; height: 1px; background: var(--border); }
+
+/* ══════════════════════════════════════════════
+   CARD
+══════════════════════════════════════════════ */
+.card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--r2);
+  padding: 20px 24px;
+  transition: border-color 0.15s;
+}
+.card:hover { border-color: var(--border2); }
+
+/* ── GRIDS ── */
+.g4 { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; }
+.g3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; }
+.g2 { display: grid; grid-template-columns: repeat(2,1fr); gap: 14px; }
+
+@media(max-width:900px){ .g4{ grid-template-columns: repeat(2,1fr); } .g3{ grid-template-columns: repeat(2,1fr); } }
+@media(max-width:600px){ .g4,.g3,.g2{ grid-template-columns: 1fr; } }
+
+/* ── STAT CHIP ── */
+.stat-lbl { font-size: 11px; color: var(--text3); letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 5px; font-weight: 500; }
+.stat-val { font-family: var(--mono); font-size: 20px; font-weight: 600; letter-spacing: -0.5px; }
+.stat-sub { font-size: 12px; color: var(--text2); margin-top: 3px; }
+
+/* ── COLORS ── */
+.pos { color: var(--success); }
+.neg { color: var(--danger); }
+.neu { color: var(--text2); }
+
+/* ══════════════════════════════════════════════
+   DASHBOARD HERO
+══════════════════════════════════════════════ */
+.hero-block {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 40px;
+  align-items: center;
+  margin-bottom: 28px;
+}
+.hero-total {
+  font-family: var(--mono);
+  font-size: 44px;
+  font-weight: 700;
+  letter-spacing: -2px;
+  color: var(--text);
+}
+.hero-change { font-size: 14px; margin-top: 6px; }
+
+/* ══════════════════════════════════════════════
+   CHARTS ROW
+══════════════════════════════════════════════ */
+.charts-row { display: grid; grid-template-columns: 1fr 1fr 1.4fr; gap: 14px; }
+@media(max-width:800px){ .charts-row{ grid-template-columns: 1fr 1fr; } }
+
+.chart-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--r2); padding: 18px 20px; }
+.chart-lbl { font-size: 11px; color: var(--text3); letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 14px; font-weight: 500; }
+.donut-wrap { position: relative; width: 110px; height: 110px; margin: 0 auto 14px; }
+.donut-center {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  font-size: 10px; color: var(--text3); text-align: center;
+}
+.donut-center strong { font-family: var(--mono); font-size: 16px; color: var(--text); font-weight: 600; display: block; }
+.leg-item { display: flex; align-items: center; gap: 8px; margin-bottom: 5px; font-size: 12px; }
+.leg-dot { width: 7px; height: 7px; border-radius: 2px; flex-shrink: 0; }
+
+/* ══════════════════════════════════════════════
+   HEALTH FACTOR
+══════════════════════════════════════════════ */
+.hf-layout { display: grid; grid-template-columns: 200px 1fr; gap: 32px; align-items: start; }
+@media(max-width:700px){ .hf-layout{ grid-template-columns:1fr; } }
+
+.gauge-container { text-align: center; }
+.gauge-hf-val {
+  font-family: var(--mono);
+  font-size: 32px;
+  font-weight: 700;
+  margin-top: 8px;
+  letter-spacing: -1px;
+}
+.gauge-status { font-size: 12px; font-weight: 500; margin-top: 4px; }
+
+.hf-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; margin-bottom: 16px; }
+.hf-item { background: var(--bg3); border-radius: 8px; padding: 10px 14px; }
+.hf-item-lbl { font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 3px; }
+.hf-item-val { font-family: var(--mono); font-size: 15px; font-weight: 600; }
+
+.stress-box { background: var(--bg3); border: 1px solid var(--border); border-radius: var(--r); padding: 16px 18px; }
+.stress-lbl { font-size: 11px; color: var(--text2); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px; }
+
+input[type="range"] {
+  -webkit-appearance: none;
+  width: 100%; height: 3px;
+  background: var(--border2);
+  border-radius: 2px; outline: none;
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 15px; height: 15px;
+  background: var(--accent);
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 0 0 3px var(--tag-bg);
+}
+
+.stress-vals { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; margin-top: 12px; }
+.stress-val-item { background: var(--bg2); border-radius: 7px; padding: 8px 10px; }
+.stress-val-lbl { font-size: 10px; color: var(--text3); margin-bottom: 2px; }
+.stress-val-num { font-family: var(--mono); font-size: 13px; font-weight: 500; }
+
+/* ══════════════════════════════════════════════
+   LP CARD
+══════════════════════════════════════════════ */
+.lp-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--r2); padding: 20px 24px; margin-bottom: 14px; }
+.lp-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 18px; }
+.lp-pair { font-size: 17px; font-weight: 600; }
+.lp-sub { font-size: 12px; color: var(--text2); margin-top: 2px; }
+
+.badge {
+  font-family: var(--mono);
+  font-size: 10px; font-weight: 600;
+  letter-spacing: 0.8px;
+  padding: 3px 10px; border-radius: 20px;
+  text-transform: uppercase;
+}
+.badge-green  { background: rgba(74,222,128,0.12); color: var(--success); }
+.badge-red    { background: rgba(248,113,113,0.12); color: var(--danger); }
+.badge-yellow { background: rgba(245,158,11,0.12);  color: var(--warn); }
+
+/* Range viz */
+.range-viz { margin-bottom: 16px; }
+.range-labels { display: flex; justify-content: space-between; font-family: var(--mono); font-size: 11px; color: var(--text2); margin-bottom: 6px; }
+.range-track { position: relative; height: 6px; background: var(--bg3); border-radius: 3px; }
+.range-fill { position: absolute; height: 100%; border-radius: 3px; background: linear-gradient(90deg, var(--accent2), var(--accent)); opacity: 0.7; }
+.range-needle { position: absolute; top: 50%; transform: translate(-50%,-50%); width: 2px; height: 14px; background: var(--warn); border-radius: 2px; }
+.range-minmax { display: flex; justify-content: space-between; font-family: var(--mono); font-size: 10px; color: var(--text3); margin-top: 4px; }
+
+.lp-metrics { display: grid; grid-template-columns: repeat(4,1fr); gap: 10px; margin-top: 16px; }
+@media(max-width:700px){ .lp-metrics{ grid-template-columns: repeat(2,1fr); } }
+.lp-m-lbl { font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 2px; }
+.lp-m-val { font-family: var(--mono); font-size: 13px; font-weight: 500; }
+
+/* IL stress */
+.il-box { background: var(--bg3); border-radius: var(--r); padding: 14px 16px; margin-top: 16px; }
+.il-box-lbl { font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px; }
+.il-slider-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.il-pct-label { font-family: var(--mono); font-size: 12px; min-width: 44px; text-align: right; color: var(--text2); }
+.il-results { display: grid; grid-template-columns: repeat(4,1fr); gap: 8px; }
+.il-res-item { background: var(--bg2); border-radius: 7px; padding: 8px 10px; }
+.il-res-lbl { font-size: 9px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 2px; }
+.il-res-val { font-family: var(--mono); font-size: 12px; font-weight: 500; }
+
+/* ══════════════════════════════════════════════
+   PNL
+══════════════════════════════════════════════ */
+.pnl-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--border); }
+.pnl-row:last-child { border-bottom: none; }
+.pnl-lbl { font-size: 13px; color: var(--text2); }
+.pnl-val { font-family: var(--mono); font-size: 13px; font-weight: 600; }
+.pnl-total { border-top: 2px solid var(--border2) !important; padding-top: 14px !important; margin-top: 4px; }
+.pnl-total .pnl-lbl { color: var(--text); font-weight: 600; }
+.pnl-total .pnl-val { font-size: 18px; }
+
+/* ══════════════════════════════════════════════
+   RISK
+══════════════════════════════════════════════ */
+.risk-cols { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; }
+@media(max-width:700px){ .risk-cols{ grid-template-columns:1fr; } }
+.risk-col-hd { font-size: 11px; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; padding: 5px 10px; border-radius: 6px; margin-bottom: 10px; }
+.risk-col-hd.low    { background: rgba(74,222,128,0.1); color: var(--success); }
+.risk-col-hd.medium { background: rgba(245,158,11,0.1); color: var(--warn); }
+.risk-col-hd.high   { background: rgba(248,113,113,0.1); color: var(--danger); }
+.risk-item { background: var(--bg3); border-radius: 8px; padding: 10px 12px; margin-bottom: 8px; }
+.risk-name { font-size: 13px; font-weight: 500; }
+.risk-detail { font-size: 11px; color: var(--text2); margin-top: 2px; }
+.risk-usd { font-family: var(--mono); font-size: 11px; color: var(--text3); margin-top: 4px; }
+
+/* ══════════════════════════════════════════════
+   RECS
+══════════════════════════════════════════════ */
+.rec-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--r2); padding: 16px 20px; margin-bottom: 10px; display: grid; grid-template-columns: 72px 1fr; gap: 16px; align-items: start; }
+.rec-priority { font-family: var(--mono); font-size: 10px; font-weight: 600; letter-spacing: 0.5px; padding-top: 2px; }
+.rec-title { font-size: 14px; font-weight: 600; margin-bottom: 8px; }
+.rec-detail { display: grid; grid-template-columns: auto 1fr; gap: 3px 10px; font-size: 12px; }
+.rec-key { color: var(--text3); font-weight: 500; }
+.rec-gas-row { margin-top: 8px; font-family: var(--mono); font-size: 11px; color: var(--text3); }
+
+/* ══════════════════════════════════════════════
+   OPPORTUNITIES
+══════════════════════════════════════════════ */
+.opp-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--r2); padding: 16px 20px; margin-bottom: 10px; }
+.opp-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.opp-name { font-size: 14px; font-weight: 600; }
+.opp-sub { font-size: 12px; color: var(--text2); margin-top: 2px; }
+.opp-apy { font-family: var(--mono); font-size: 20px; font-weight: 700; color: var(--accent); }
+.opp-why { font-size: 12px; color: var(--text2); border-top: 1px solid var(--border); padding-top: 8px; margin-top: 8px; }
+
+/* ══════════════════════════════════════════════
+   DCA MODULE  ← новый раздел
+══════════════════════════════════════════════ */
+.dca-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--r2); padding: 20px 24px; }
+
+/* Input row */
+.dca-inputs { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; margin-bottom: 20px; }
+@media(max-width:700px){ .dca-inputs{ grid-template-columns:1fr 1fr; } }
+
+.dca-input-group { display: flex; flex-direction: column; gap: 5px; }
+.dca-input-lbl { font-size: 11px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.5px; font-weight: 500; }
+.dca-input {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-family: var(--mono);
+  font-size: 14px;
+  color: var(--text);
+  outline: none;
+  transition: border-color 0.15s;
+  width: 100%;
+}
+.dca-input:focus { border-color: var(--accent); }
+.dca-input::placeholder { color: var(--text3); }
+
+.dca-btn {
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 9px 20px;
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.15s;
+  align-self: flex-end;
+}
+.dca-btn:hover { opacity: 0.88; }
+
+/* Strategy display */
+.dca-strategy {
+  display: none;
+  margin-top: 20px;
+  border-top: 1px solid var(--border);
+  padding-top: 20px;
+}
+.dca-strategy.visible { display: block; }
+
+.dca-visual {
+  background: var(--bg3);
+  border-radius: var(--r);
+  padding: 16px 20px;
+  margin-bottom: 16px;
+  position: relative;
+  overflow: hidden;
+}
+.dca-vis-lbl { font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px; }
+.dca-price-bar { position: relative; height: 8px; background: var(--bg4); border-radius: 4px; margin-bottom: 8px; }
+.dca-range-fill { position: absolute; height: 100%; border-radius: 4px; background: linear-gradient(90deg, rgba(124,106,247,0.5), rgba(91,184,245,0.5)); }
+.dca-entry-line { position: absolute; top: 50%; transform: translate(-50%,-50%); width: 2px; height: 16px; background: var(--accent); border-radius: 1px; }
+.dca-now-line { position: absolute; top: 50%; transform: translate(-50%,-50%); width: 2px; height: 16px; background: var(--warn); border-radius: 1px; }
+.dca-price-labels { display: flex; justify-content: space-between; font-family: var(--mono); font-size: 10px; color: var(--text3); }
+
+.dca-timeline { display: grid; grid-template-columns: repeat(7,1fr); gap: 6px; margin-top: 16px; }
+.dca-day {
+  background: var(--bg4);
+  border-radius: 6px;
+  padding: 8px 6px;
+  text-align: center;
+}
+.dca-day.filled { background: rgba(124,106,247,0.15); border: 1px solid rgba(124,106,247,0.25); }
+.dca-day.partial { background: rgba(245,158,11,0.1); border: 1px solid rgba(245,158,11,0.2); }
+.dca-day-lbl { font-size: 9px; color: var(--text3); margin-bottom: 3px; }
+.dca-day-val { font-family: var(--mono); font-size: 11px; font-weight: 500; }
+.dca-day-sub { font-size: 9px; color: var(--text3); margin-top: 2px; }
+
+.dca-summary-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 10px; margin-top: 16px; }
+.dca-sum-item { background: var(--bg3); border-radius: 8px; padding: 10px 12px; }
+.dca-sum-lbl { font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 3px; }
+.dca-sum-val { font-family: var(--mono); font-size: 14px; font-weight: 600; }
+
+.dca-fallback-box {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 14px 16px;
+  margin-top: 14px;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+.dca-fallback-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+.dca-fallback-text { font-size: 12px; color: var(--text2); line-height: 1.6; }
+.dca-fallback-text strong { color: var(--text); display: block; margin-bottom: 2px; }
+
+/* ══════════════════════════════════════════════
+   NO DATA
+══════════════════════════════════════════════ */
+.no-data {
+  background: var(--bg3);
+  border: 1px dashed var(--border2);
+  border-radius: var(--r);
+  padding: 28px 24px;
+  text-align: center;
+  color: var(--text3);
+}
+.no-data code { font-family: var(--mono); font-size: 12px; color: var(--accent2); background: var(--bg4); padding: 2px 7px; border-radius: 4px; }
+
+/* ══════════════════════════════════════════════
+   FOOTER
+══════════════════════════════════════════════ */
+.footer { border-top: 1px solid var(--border); padding-top: 20px; margin-top: 52px; font-size: 11px; color: var(--text3); line-height: 1.8; }
+</style>
+</head>
+<body>
+
+<!-- ════════════════════════════════════════════
+     DATA — агент заменяет этот блок целиком
+     Маркеры: DATA_INJECT_START / DATA_INJECT_END
+════════════════════════════════════════════ -->
+<!-- DATA_INJECT_START -->
+<script>
+window.PORTFOLIO_DATA = {
+  meta: {
+    wallet_evm:   "0xB530bc3e9C2d6Dd6367DCDADAfED5422A1b242fF",
+    wallet_aptos: "0xc7844f8a7d0e3bfc3dfe225dcf944729f2f8b6d75f581ed18459dc5ae40ba646",
+    generated_at: "2026-03-20T08:05:00Z",
+    version: "2.0"
+  },
+  summary: {
+    total_usd: 12710.20,
+    change_24h_usd: -108.37,
+    change_24h_pct: -0.85,
+    by_network: {
+      "Arbitrum": { usd: 12448.77, pct: 97.9 },
+      "Base":     { usd: 37.26,    pct: 0.3 },
+      "Optimism": { usd: 13.21,    pct: 0.1 },
+      "Aptos":    { usd: 0,        pct: 0.0 }
+    },
+    by_type: {
+      "Lending": { usd: 10371.88, pct: 81.6 },
+      "LP":      { usd: 2100.67,  pct: 16.5 },
+      "Wallet":  { usd: 237.65,   pct: 1.9 }
+    }
+  },
+  aave: {
+    health_factor: 1.9821,
+    collateral_usd: 10371.88,
+    debt_usd: 4156.83,
+    net_usd: 6215.05,
+    ltv_pct: 75.81,
+    liq_threshold_pct: 79.43,
+    available_borrows: 3706.09,
+    liq_buffer_pct: 49.5,
+    reserves: [
+      { symbol: "wstETH", usd: 4765.19, supply_apy: 0.00015 },
+      { symbol: "USDC",   usd: 3900.84, supply_apy: 1.5056 },
+      { symbol: "WETH",   usd: 1683.09, supply_apy: 1.7861 }
+    ],
+    debts: [
+      { symbol: "USDC", usd: 2589.35, borrow_apy: 2.7538 },
+      { symbol: "USDT", usd: 1567.55, borrow_apy: 2.8342 }
+    ]
+  },
+  lp_positions: [
+    {
+      id: "lp1",
+      pair: "WETH/USDC",
+      protocol: "Uniswap v3",
+      network: "Arbitrum",
+      status: "in_range",
+      usd_value: 626.13,
+      current_price: 2146.58,
+      range_lower_price: 1800,
+      range_upper_price: 2500,
+      il_pct: null,
+      fees_earned_usd: 5.12,
+      net_roi_pct: null,
+      entry_date: "Нет данных",
+      apy_current: null,
+      token0: { symbol: "WETH", price_entry: null, price_current: 2146.58 }
+    },
+    {
+      id: "lp2",
+      pair: "WETH/USDC",
+      protocol: "Uniswap v3",
+      network: "Arbitrum",
+      status: "out_of_range",
+      usd_value: 1030.18,
+      current_price: 2146.58,
+      range_lower_price: 2300,
+      range_upper_price: 3000,
+      il_pct: null,
+      fees_earned_usd: 0.54,
+      net_roi_pct: null,
+      entry_date: "Нет данных",
+      apy_current: 0,
+      token0: { symbol: "WETH", price_entry: null, price_current: 2146.58 },
+      note: "OUT OF RANGE — вся позиция в USDC, комиссии не начисляются"
+    },
+    {
+      id: "lp3",
+      pair: "WETH/USDC",
+      protocol: "Uniswap v3",
+      network: "Arbitrum",
+      status: "in_range",
+      usd_value: 444.36,
+      current_price: 2146.58,
+      range_lower_price: 1900,
+      range_upper_price: 2400,
+      il_pct: null,
+      fees_earned_usd: 6.99,
+      net_roi_pct: null,
+      entry_date: "Нет данных",
+      apy_current: null,
+      token0: { symbol: "WETH", price_entry: null, price_current: 2146.58 }
+    }
+  ],
+  pnl: {
+    realized_usd: 0,
+    unrealized_usd: 0,
+    fees_earned_usd: 12.65,
+    il_losses_usd: 0,
+    net_usd: 12.65
+  },
+  risk: {
+    low: [
+      { name: "Aave v3 (Arbitrum)", detail: "TVL $527M · Аудит: OpenZeppelin · 5+ лет · Ведущий протокол", usd: 10371.88 }
+    ],
+    medium: [
+      { name: "Uniswap v3 LP #1", detail: "WETH/USDC · In-range · Зарабатывает комиссии", usd: 626.13 },
+      { name: "Uniswap v3 LP #3", detail: "WETH/USDC · In-range · Зарабатывает комиссии", usd: 444.36 },
+      { name: "ARB токен", detail: "Governance · Высокая волатильность · Без дохода", usd: 166.78 },
+      { name: "GMX Market (GM)", detail: "Arbitrum + Base · Нет ценовых данных · Требует проверки", usd: 0 }
+    ],
+    high: [
+      { name: "⚠️ Uniswap v3 LP #2 (OUT OF RANGE)", detail: "$1030 не зарабатывает комиссии · Требует ребалансировки", usd: 1030.18 },
+      { name: "Aave HF мониторинг", detail: "HF 1.98 · Падение ETH на 49.5% → ликвидация $10,371", usd: 0 }
+    ]
+  },
+  recommendations: [
+    {
+      priority: "🔴 СРОЧНО",
+      title: "Ребалансировать LP #2 (OUT OF RANGE)",
+      what: "Закрыть LP #2 ($1030) и открыть новую позицию в текущем диапазоне ETH",
+      why: "Позиция не зарабатывает комиссии — $1030 простаивают. Fees всего $0.54",
+      where: "Uniswap v3 Arbitrum — новый диапазон вокруг $2146",
+      gas_est: "~$2-4",
+      effect: "Возобновление дохода от комиссий"
+    },
+    {
+      priority: "🔴 СРОЧНО",
+      title: "Собрать unclaimed fees ($12.65)",
+      what: "Claim fees: LP #1 ($5.12) + LP #3 ($6.99)",
+      why: "Комиссии не реинвестируются — упущенный compound эффект",
+      where: "Uniswap v3 Arbitrum",
+      gas_est: "~$1-2",
+      effect: "+$12.65 → реинвестировать в Aave или LP"
+    },
+    {
+      priority: "🟡 ВАЖНО",
+      title: "Алерт при HF < 1.5",
+      what: "Настроить мониторинг Health Factor",
+      why: "HF 1.98 — при падении ETH на 49.5% наступает ликвидация",
+      where: "DeFiSense heartbeat / Aave UI",
+      gas_est: "~$0",
+      effect: "Защита $10,371 залога"
+    },
+    {
+      priority: "🟡 ВАЖНО",
+      title: "ARB → Camelot ARB/WETH пул",
+      what: "Разместить $166 ARB в Camelot DEX",
+      why: "ARB лежит без дохода. Camelot ARB/WETH ~18% APY",
+      where: "Camelot DEX Arbitrum",
+      gas_est: "~$1.50",
+      effect: "+$30/год пассивного дохода"
+    },
+    {
+      priority: "🟢 ДОЛГОСРОЧНО",
+      title: "Проверить GM токены (GMX Market)",
+      what: "Определить стоимость GM токенов (84.26 ARB + 50.57 Base)",
+      why: "Zerion не показывает цену — возможно значительная сумма",
+      where: "app.gmx.io",
+      gas_est: "~$0",
+      effect: "Полная картина портфеля"
+    }
+  ],
+  opportunities: [
+    {
+      rank: 1,
+      protocol: "Uniswap v3",
+      network: "Arbitrum",
+      pair: "WETH/USDC",
+      apy: 37.69,
+      tvl_m: 51.7,
+      risk: "🟡 Средний",
+      why: "Уже есть позиции — ребалансировать LP #2 в текущий диапазон. Самый ликвидный пул Arbitrum."
+    },
+    {
+      rank: 2,
+      protocol: "Uniswap v3",
+      network: "Base",
+      pair: "WETH/USDC",
+      apy: 110.78,
+      tvl_m: 88.3,
+      risk: "🟡 Средний",
+      why: "Высокий APY на Base. Есть ETH на Base ($35) — можно открыть небольшую позицию."
+    },
+    {
+      rank: 3,
+      protocol: "Aave v3",
+      network: "Arbitrum",
+      pair: "USDC supply",
+      apy: 1.51,
+      tvl_m: 527.8,
+      risk: "🟢 Низкий",
+      why: "Реинвестировать fees ($12.65) в Aave USDC — снизит долговую нагрузку или увеличит залог."
+    }
+  ],
+  sparkline: []
+};
+</script>
+<!-- DATA_INJECT_END -->
+
+<div class="page">
+
+<!-- ══ HEADER ══ -->
+<div class="header">
+  <div class="brand">
+    <div class="brand-icon">◈</div>
+    <div>
+      <div class="brand-name">DeFiSense</div>
+      <div class="brand-sub">PORTFOLIO AUDIT v2.0</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <div class="theme-toggle" onclick="toggleTheme()">
+      <button class="theme-btn" id="btnDark" onclick="setTheme('dark',event)">🌙</button>
+      <button class="theme-btn" id="btnLight" onclick="setTheme('light',event)">☀️</button>
+    </div>
+    <div class="wallet-chip" id="walletChip">—</div>
+    <div class="report-dt" id="reportDt">—</div>
+  </div>
+</div>
+
+<!-- ══ S1: DASHBOARD ══ -->
+<div class="section">
+  <div class="section-header">
+    <span class="section-num">01</span>
+    <span class="section-title">Общая картина</span>
+    <span class="section-line"></span>
+  </div>
+
+  <div class="hero-block">
+    <div>
+      <div class="hero-total" id="heroTotal">$—</div>
+      <div class="hero-change" id="heroChange">—</div>
+    </div>
+    <div class="g4" id="summaryCards"></div>
+  </div>
+
+  <div class="charts-row">
+    <div class="chart-card">
+      <div class="chart-lbl">По сетям</div>
+      <div class="donut-wrap">
+        <canvas id="donutNet" width="110" height="110"></canvas>
+        <div class="donut-center"><strong id="dnN">—</strong>сетей</div>
+      </div>
+      <div id="legNet"></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-lbl">По типам</div>
+      <div class="donut-wrap">
+        <canvas id="donutType" width="110" height="110"></canvas>
+        <div class="donut-center"><strong id="dtN">—</strong>типов</div>
+      </div>
+      <div id="legType"></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-lbl">Портфель · 30 дней</div>
+      <canvas id="sparkCanvas" width="280" height="80" style="width:100%;margin:8px 0"></canvas>
+      <div id="sparkMeta" style="font-size:11px;color:var(--text3);text-align:center"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ S2: HEALTH FACTOR ══ -->
+<div class="section">
+  <div class="section-header">
+    <span class="section-num">02</span>
+    <span class="section-title">Aave v3 · Health Factor</span>
+    <span class="section-line"></span>
+  </div>
+  <div class="card">
+    <div class="hf-layout">
+      <div class="gauge-container">
+        <canvas id="gaugeC" width="180" height="100"></canvas>
+        <div class="gauge-hf-val" id="gVal">—</div>
+        <div class="gauge-status" id="gStatus">—</div>
+      </div>
+      <div>
+        <div class="hf-grid" id="hfGrid"></div>
+        <div class="stress-box">
+          <div class="stress-lbl">Сценарий: залог падает на <span id="dropPctLbl">0</span>%</div>
+          <input type="range" id="dropSlider" min="0" max="80" value="0" step="1">
+          <div class="stress-vals" id="stressVals"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ S3: LP ══ -->
+<div class="section">
+  <div class="section-header">
+    <span class="section-num">03</span>
+    <span class="section-title">LP Позиции</span>
+    <span class="section-line"></span>
+  </div>
+  <div id="lpCont"></div>
+</div>
+
+<!-- ══ S4: PNL ══ -->
+<div class="section">
+  <div class="section-header">
+    <span class="section-num">04</span>
+    <span class="section-title">PnL Сводка</span>
+    <span class="section-line"></span>
+  </div>
+  <div class="card" id="pnlCard"></div>
+</div>
+
+<!-- ══ S5: RISK ══ -->
+<div class="section">
+  <div class="section-header">
+    <span class="section-num">05</span>
+    <span class="section-title">Риск-матрица</span>
+    <span class="section-line"></span>
+  </div>
+  <div class="risk-cols">
+    <div><div class="risk-col-hd low">🟢 Низкий</div><div id="rLow"></div></div>
+    <div><div class="risk-col-hd medium">🟡 Средний</div><div id="rMed"></div></div>
+    <div><div class="risk-col-hd high">🔴 Высокий</div><div id="rHigh"></div></div>
+  </div>
+</div>
+
+<!-- ══ S6: RECOMMENDATIONS ══ -->
+<div class="section">
+  <div class="section-header">
+    <span class="section-num">06</span>
+    <span class="section-title">Рекомендации</span>
+    <span class="section-line"></span>
+  </div>
+  <div id="recsCont"></div>
+</div>
+
+<!-- ══ S7: OPPORTUNITIES ══ -->
+<div class="section">
+  <div class="section-header">
+    <span class="section-num">07</span>
+    <span class="section-title">Новые возможности</span>
+    <span class="section-line"></span>
+  </div>
+  <div id="oppsCont"></div>
+</div>
+
+<!-- ══ S8: DCA STRATEGY ══ -->
+<div class="section">
+  <div class="section-header">
+    <span class="section-num">08</span>
+    <span class="section-title">DCA через LP · Плановый ввод средств</span>
+    <span class="section-line"></span>
+  </div>
+  <div class="dca-card">
+    <p style="font-size:13px;color:var(--text2);margin-bottom:16px;line-height:1.7">
+      Стратегия: открыть <strong style="color:var(--text)">одностороннюю LP позицию</strong> в USDC/USDT на верхней границе текущей цены.
+      Пока цена падает — USDC конвертируется в ETH автоматически, как серия лимитных ордеров.
+      Если к концу недели остаток не выкуплен — закрыть пул и депозитировать остаток в Aave как залог.
+    </p>
+
+    <div class="dca-inputs">
+      <div class="dca-input-group">
+        <label class="dca-input-lbl">Сумма (USDC)</label>
+        <input class="dca-input" id="dcaAmount" type="number" placeholder="5000" value="5000">
+      </div>
+      <div class="dca-input-group">
+        <label class="dca-input-lbl">Текущая цена ETH</label>
+        <input class="dca-input" id="dcaPrice" type="number" placeholder="2316" value="2316">
+      </div>
+      <div class="dca-input-group">
+        <label class="dca-input-lbl">Диапазон вниз (%)</label>
+        <input class="dca-input" id="dcaRange" type="number" placeholder="10" value="10">
+      </div>
+      <div class="dca-input-group">
+        <label class="dca-input-lbl">Дней в неделю</label>
+        <input class="dca-input" id="dcaDays" type="number" placeholder="7" value="7" min="1" max="14">
+      </div>
+      <div class="dca-input-group">
+        <label class="dca-input-lbl">Ожидаемый APY пула (%)</label>
+        <input class="dca-input" id="dcaApy" type="number" placeholder="27" value="27">
+      </div>
+      <div class="dca-input-group" style="justify-content:flex-end">
+        <label class="dca-input-lbl">&nbsp;</label>
+        <button class="dca-btn" onclick="calcDCA()">Рассчитать →</button>
+      </div>
+    </div>
+
+    <div class="dca-strategy" id="dcaResult"></div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+  <p>⚠️ Анализ предоставляется исключительно в информационных целях и не является финансовым советом. DeFi сопряжён с высокими рисками, включая потерю капитала.</p>
+  <p style="margin-top:6px">Источники: Zerion API · Moralis · DeFiLlama · Krystal Cloud · Alchemy RPC · Nodit (Aptos) · The Graph (Aave subgraph)</p>
+</div>
+
+</div><!-- /page -->
+
+<script>
+// ════════════════════════════════════════════
+// THEME
+// ════════════════════════════════════════════
+function setTheme(t, e) {
+  if (e) e.stopPropagation();
+  document.documentElement.setAttribute("data-theme", t);
+  document.getElementById("btnDark").classList.toggle("active", t === "dark");
+  document.getElementById("btnLight").classList.toggle("active", t === "light");
+  localStorage.setItem("ds-theme", t);
+  // Redraw canvases on theme change (only after data is initialized)
+  if (typeof netSegs !== "undefined") drawDonut("donutNet", netSegs);
+  if (typeof typeSegs !== "undefined") drawDonut("donutType", typeSegs);
+  if (typeof D !== "undefined") {
+    drawGauge(D.aave.health_factor);
+    drawSparkline(D.sparkline);
+  }
+}
+function toggleTheme() {
+  setTheme(document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark");
+}
+const saved = localStorage.getItem("ds-theme");
+if (saved) setTheme(saved);
+else document.getElementById("btnDark").classList.add("active");
+
+// ════════════════════════════════════════════
+// HELPERS
+// ════════════════════════════════════════════
+const D = window.PORTFOLIO_DATA;
+const fmt = (n, d=2) => n == null ? "—" : "$" + Number(n).toLocaleString("en-US",{minimumFractionDigits:d,maximumFractionDigits:d});
+const pct  = n => n == null ? "—" : (n>=0?"+":"")+Number(n).toFixed(2)+"%";
+const clr  = n => n > 0 ? "var(--success)" : n < 0 ? "var(--danger)" : "var(--text2)";
+const css  = v => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+
+// ── Header ──
+document.getElementById("walletChip").textContent = D.meta.wallet_evm.slice(0,10)+"…"+D.meta.wallet_evm.slice(-6);
+document.getElementById("reportDt").textContent = new Date(D.meta.generated_at).toLocaleString("ru-RU",{dateStyle:"medium",timeStyle:"short"});
+
+// ── Hero ──
+document.getElementById("heroTotal").textContent = fmt(D.summary.total_usd);
+const hc = document.getElementById("heroChange");
+hc.style.color = clr(D.summary.change_24h_usd);
+hc.textContent = `${pct(D.summary.change_24h_pct)}   ${fmt(D.summary.change_24h_usd)} за 24ч`;
+
+// ── Summary cards ──
+const cards = [
+  { lbl:"Общий портфель", val:fmt(D.summary.total_usd),   sub:pct(D.summary.change_24h_pct)+" за 24ч",  sc:clr(D.summary.change_24h_pct) },
+  { lbl:"Aave Net",       val:fmt(D.aave.net_usd),         sub:"HF: "+D.aave.health_factor,              sc:D.aave.health_factor>=2?"var(--success)":D.aave.health_factor>=1.5?"var(--warn)":"var(--danger)" },
+  { lbl:"LP позиций",     val:D.lp_positions.length||"N/A",sub:D.lp_positions.length?"активных":"нет данных",sc:"var(--text2)" },
+  { lbl:"Свободные",      val:fmt((D.summary.by_type["Wallet"]||{}).usd||0), sub:"в кошельке", sc:"var(--text2)" }
+];
+document.getElementById("summaryCards").innerHTML = cards.map(c=>`
+  <div class="card">
+    <div class="stat-lbl">${c.lbl}</div>
+    <div class="stat-val">${c.val}</div>
+    <div class="stat-sub" style="color:${c.sc}">${c.sub}</div>
+  </div>`).join("");
+
+// ════════════════════════════════════════════
+// DONUTS
+// ════════════════════════════════════════════
+const COLORS = ["#7c6af7","#5bb8f5","#f59e0b","#f87171","#4ade80","#fb7185","#38bdf8"];
+
+let netSegs, typeSegs;
+
+function drawDonut(canvasId, segs) {
+  const c = document.getElementById(canvasId);
+  if (!c || !segs) return;
+  const ctx = c.getContext("2d");
+  ctx.clearRect(0,0,c.width,c.height);
+  const cx=55,cy=55,r=48,inner=30;
+  let angle = -Math.PI/2;
+  const bg = css("--bg3") || "#1e1f25";
+  ctx.beginPath(); ctx.arc(cx,cy,r,0,2*Math.PI); ctx.fillStyle=bg; ctx.fill();
+  segs.forEach((s,i)=>{
+    const slice = (s.pct/100)*2*Math.PI;
+    ctx.beginPath(); ctx.moveTo(cx,cy);
+    ctx.arc(cx,cy,r,angle,angle+slice);
+    ctx.closePath(); ctx.fillStyle=COLORS[i%COLORS.length]; ctx.fill();
+    angle+=slice;
+  });
+  ctx.beginPath(); ctx.arc(cx,cy,inner,0,2*Math.PI);
+  ctx.fillStyle=css("--bg2")||"#17181c"; ctx.fill();
+}
+
+netSegs  = Object.entries(D.summary.by_network).map(([k,v])=>({label:k,...v}));
+typeSegs = Object.entries(D.summary.by_type).filter(([,v])=>v.pct>0).map(([k,v])=>({label:k,...v}));
+
+drawDonut("donutNet", netSegs);
+drawDonut("donutType",typeSegs);
+
+document.getElementById("dnN").textContent = netSegs.length;
+document.getElementById("dtN").textContent = typeSegs.length;
+
+document.getElementById("legNet").innerHTML = netSegs.map((n,i)=>`
+  <div class="leg-item">
+    <div class="leg-dot" style="background:${COLORS[i]}"></div>
+    <span style="color:var(--text2);flex:1">${n.label}</span>
+    <span style="font-family:var(--mono);font-size:11px">${n.pct}%</span>
+  </div>`).join("");
+
+document.getElementById("legType").innerHTML = typeSegs.map((t,i)=>`
+  <div class="leg-item">
+    <div class="leg-dot" style="background:${COLORS[i]}"></div>
+    <span style="color:var(--text2);flex:1">${t.label}</span>
+    <span style="font-family:var(--mono);font-size:11px">${fmt(t.usd,0)}</span>
+  </div>`).join("");
+
+// ── Sparkline ──
+function drawSparkline(data) {
+  const c = document.getElementById("sparkCanvas");
+  const ctx = c.getContext("2d");
+  ctx.clearRect(0,0,c.width,c.height);
+  if (!data || data.length < 2) {
+    document.getElementById("sparkMeta").textContent = "Данные отсутствуют: запустить zerion.sh charts";
+    return;
+  }
+  const W=c.width, H=c.height;
+  const vals=data.map(p=>p.v);
+  const min=Math.min(...vals), range=Math.max(...vals)-min||1;
+  const pts=vals.map((v,i)=>({x:(i/(vals.length-1))*W, y:H-((v-min)/range)*(H-8)-4}));
+  const accentRgb = "124,106,247";
+  const grad=ctx.createLinearGradient(0,0,0,H);
+  grad.addColorStop(0,`rgba(${accentRgb},0.25)`);
+  grad.addColorStop(1,`rgba(${accentRgb},0)`);
+  ctx.beginPath(); ctx.moveTo(pts[0].x,pts[0].y);
+  pts.slice(1).forEach(p=>ctx.lineTo(p.x,p.y));
+  ctx.lineTo(W,H); ctx.lineTo(0,H); ctx.closePath();
+  ctx.fillStyle=grad; ctx.fill();
+  ctx.beginPath(); ctx.moveTo(pts[0].x,pts[0].y);
+  pts.slice(1).forEach(p=>ctx.lineTo(p.x,p.y));
+  ctx.strokeStyle=`rgba(${accentRgb},0.9)`; ctx.lineWidth=2; ctx.stroke();
+  document.getElementById("sparkMeta").textContent = `30 дней · ${data.length} точек`;
+}
+drawSparkline(D.sparkline);
+
+// ════════════════════════════════════════════
+// GAUGE
+// ════════════════════════════════════════════
+function drawGauge(hf) {
+  const c=document.getElementById("gaugeC");
+  const ctx=c.getContext("2d");
+  ctx.clearRect(0,0,c.width,c.height);
+  const cx=90,cy=90,r=72;
+  const zones=[
+    {from:0,   to:1.2, color:"#f87171"},
+    {from:1.2, to:1.5, color:"#fb923c"},
+    {from:1.5, to:2.0, color:"#f59e0b"},
+    {from:2.0, to:3.0, color:"#4ade80"}
+  ];
+  const maxHF=3;
+  // BG
+  ctx.beginPath(); ctx.arc(cx,cy,r,Math.PI,2*Math.PI);
+  ctx.lineWidth=10; ctx.strokeStyle=css("--border")||"#2a2b35"; ctx.stroke();
+  // Zones
+  zones.forEach(z=>{
+    const a1=Math.PI+(z.from/maxHF)*Math.PI;
+    const a2=Math.PI+(Math.min(z.to,maxHF)/maxHF)*Math.PI;
+    ctx.beginPath(); ctx.arc(cx,cy,r,a1,a2);
+    ctx.strokeStyle=z.color; ctx.lineWidth=10; ctx.stroke();
+  });
+  // Needle
+  if (hf!=null) {
+    const clampedHF=Math.min(hf,maxHF);
+    const na=Math.PI+(clampedHF/maxHF)*Math.PI;
+    ctx.save();
+    ctx.translate(cx,cy);
+    ctx.rotate(na-Math.PI/2);
+    ctx.beginPath(); ctx.moveTo(0,4); ctx.lineTo(0,-(r-14));
+    ctx.strokeStyle=css("--text")||"#e8e9f0"; ctx.lineWidth=2; ctx.stroke();
+    ctx.restore();
+    ctx.beginPath(); ctx.arc(cx,cy,5,0,2*Math.PI);
+    ctx.fillStyle=css("--text")||"#e8e9f0"; ctx.fill();
+  }
+}
+const hf=D.aave.health_factor;
+drawGauge(hf);
+const gv=document.getElementById("gVal");
+gv.textContent = hf != null ? hf.toFixed(2) : "—";
+gv.style.color  = hf>=2?"var(--success)":hf>=1.5?"var(--warn)":"var(--danger)";
+document.getElementById("gStatus").innerHTML = `<span style="color:${hf>=2?"var(--success)":hf>=1.5?"var(--warn)":"var(--danger)"}">${hf>=2?"🟢 Безопасно":hf>=1.5?"🟡 Мониторинг":"🔴 Риск ликвидации"}</span>`;
+
+// HF grid
+const hfItems=[
+  {lbl:"Залог",   val:fmt(D.aave.collateral_usd)},
+  {lbl:"Долг",    val:fmt(D.aave.debt_usd)},
+  {lbl:"Чистая",  val:fmt(D.aave.net_usd)},
+  {lbl:"Доступно",val:fmt(D.aave.available_borrows)},
+  {lbl:"LTV",     val:D.aave.ltv_pct+"%"},
+  {lbl:"Ликв. порог",val:D.aave.liq_threshold_pct+"%"},
+];
+document.getElementById("hfGrid").innerHTML = hfItems.map(i=>`
+  <div class="hf-item">
+    <div class="hf-item-lbl">${i.lbl}</div>
+    <div class="hf-item-val">${i.val}</div>
+  </div>`).join("");
+
+// Drop slider
+const dropSlider=document.getElementById("dropSlider");
+function renderStress(dp){
+  document.getElementById("dropPctLbl").textContent=dp;
+  const nc = D.aave.collateral_usd*(1-dp/100);
+  const nHF = (nc*(D.aave.liq_threshold_pct/100))/D.aave.debt_usd;
+  const liq = nHF<1;
+  const hfC = nHF>=2?"var(--success)":nHF>=1.5?"var(--warn)":nHF>=1?"var(--danger)":"var(--danger)";
+  document.getElementById("stressVals").innerHTML=`
+    <div class="stress-val-item"><div class="stress-val-lbl">Новый залог</div><div class="stress-val-num">${fmt(nc)}</div></div>
+    <div class="stress-val-item"><div class="stress-val-lbl">HF</div><div class="stress-val-num" style="color:${hfC}">${liq?"⚠️ ЛИКВИДАЦИЯ":nHF.toFixed(3)}</div></div>
+    <div class="stress-val-item"><div class="stress-val-lbl">Статус</div><div class="stress-val-num" style="font-size:12px;color:${hfC}">${liq?"Позиция закрыта":nHF>=1.5?"Безопасно":"Опасная зона"}</div></div>
+  `;
+}
+renderStress(0);
+dropSlider.addEventListener("input",e=>renderStress(+e.target.value));
+
+// ════════════════════════════════════════════
+// LP
+// ════════════════════════════════════════════
+const lpCont=document.getElementById("lpCont");
+if(!D.lp_positions||D.lp_positions.length===0){
+  lpCont.innerHTML=`<div class="no-data">
+    <div style="font-size:28px;margin-bottom:10px">⚠️</div>
+    <div style="color:var(--warn);font-weight:600;margin-bottom:6px">Данные LP позиций отсутствуют</div>
+    <div style="color:var(--text2);margin-bottom:6px">Требуется вызов:</div>
+    <code>krystal.sh positions {addr} 42161</code>
+    <div style="color:var(--text3);margin-top:8px;font-size:12px">Вернёт: tokenId, ценовой диапазон, IL%, unclaimed fees, ROI</div>
+  </div>`;
+} else {
+  lpCont.innerHTML=D.lp_positions.map(pos=>{
+    const inR=pos.status==="in_range";
+    const rng=pos.range_upper_price-pos.range_lower_price;
+    const cpct=rng>0?Math.max(0,Math.min(100,(pos.current_price-pos.range_lower_price)/rng*100)):50;
+    return `<div class="lp-card">
+      <div class="lp-top">
+        <div>
+          <div class="lp-pair">${pos.pair}</div>
+          <div class="lp-sub">${pos.protocol} · ${pos.network} · #${pos.id}</div>
+        </div>
+        <span class="badge ${inR?"badge-green":"badge-red"}">${inR?"● IN RANGE":"● OUT OF RANGE"}</span>
+      </div>
+      <div class="range-viz">
+        <div class="range-labels">
+          <span>Диапазон LP</span>
+          <span style="color:var(--warn)">Сейчас: $${pos.current_price?.toLocaleString()}</span>
+        </div>
+        <div class="range-track">
+          <div class="range-fill" style="left:0;width:100%"></div>
+          <div class="range-needle" style="left:${cpct}%"></div>
+        </div>
+        <div class="range-minmax">
+          <span>$${pos.range_lower_price?.toLocaleString()}</span>
+          <span>$${pos.range_upper_price?.toLocaleString()}</span>
+        </div>
+      </div>
+      <div class="lp-metrics">
+        <div><div class="lp-m-lbl">Позиция</div><div class="lp-m-val">${fmt(pos.usd_value)}</div></div>
+        <div><div class="lp-m-lbl">IL</div><div class="lp-m-val" style="color:var(--danger)">${pos.il_pct?.toFixed(2)}%</div></div>
+        <div><div class="lp-m-lbl">Fees earned</div><div class="lp-m-val" style="color:var(--success)">${fmt(pos.fees_earned_usd)}</div></div>
+        <div><div class="lp-m-lbl">Net ROI</div><div class="lp-m-val" style="color:${clr(pos.net_roi_pct)}">${pct(pos.net_roi_pct)}</div></div>
+        <div><div class="lp-m-lbl">Цена входа</div><div class="lp-m-val">$${pos.token0?.price_entry?.toLocaleString()||"—"}</div></div>
+        <div><div class="lp-m-lbl">Цена сейчас</div><div class="lp-m-val">$${pos.token0?.price_current?.toLocaleString()||"—"}</div></div>
+        <div><div class="lp-m-lbl">Дата входа</div><div class="lp-m-val">${pos.entry_date||"—"}</div></div>
+        <div><div class="lp-m-lbl">APY</div><div class="lp-m-val" style="color:var(--accent)">${pos.apy_current?.toFixed(2)||"—"}%</div></div>
+      </div>
+      <div class="il-box">
+        <div class="il-box-lbl">⚡ IL Стресс-тест · ${pos.pair}</div>
+        <div class="il-slider-row">
+          <span style="font-size:11px;color:var(--text3)">-80%</span>
+          <input type="range" min="-80" max="200" value="0" step="1" data-pid="${pos.id}" class="il-sl">
+          <span style="font-size:11px;color:var(--text3)">+200%</span>
+          <div class="il-pct-label"><span class="ilpd">0</span>%</div>
+        </div>
+        <div class="il-results" data-pres="${pos.id}">
+          <div class="il-res-item"><div class="il-res-lbl">Изм. цены</div><div class="il-res-val">0%</div></div>
+          <div class="il-res-item"><div class="il-res-lbl">IL</div><div class="il-res-val">0%</div></div>
+          <div class="il-res-item"><div class="il-res-lbl">Позиция</div><div class="il-res-val">${fmt(pos.usd_value)}</div></div>
+          <div class="il-res-item"><div class="il-res-lbl">Break-even</div><div class="il-res-val">—</div></div>
+        </div>
+      </div>
+    </div>`;
+  }).join("");
+
+  document.querySelectorAll(".il-sl").forEach(sl=>{
+    sl.addEventListener("input",function(){
+      const pid=this.dataset.pid;
+      const pos=D.lp_positions.find(p=>p.id==pid);
+      const cp=+this.value;
+      this.closest(".il-box").querySelector(".ilpd").textContent=(cp>0?"+":"")+cp;
+      const ratio=1+cp/100;
+      const il=ratio>0?2*Math.sqrt(ratio)/(1+ratio)-1:-1;
+      const ilU=(il*(pos.usd_value||0)).toFixed(2);
+      const nv=(pos.usd_value||0)*(1+il)*ratio;
+      const df=pos.usd_value*(pos.apy_current/100)/365;
+      const be=df>0?Math.abs(ilU/df).toFixed(0):"∞";
+      const res=document.querySelector(`[data-pres="${pid}"]`);
+      if(res){
+        const vs=res.querySelectorAll(".il-res-val");
+        vs[0].textContent=(cp>=0?"+":"")+cp+"%";
+        vs[1].textContent=`${(il*100).toFixed(2)}% ($${Math.abs(ilU)})`;
+        vs[1].style.color=il<0?"var(--danger)":"var(--success)";
+        vs[2].textContent=fmt(nv);
+        vs[3].textContent=il<0?be+" дней":"N/A";
+      }
+    });
+  });
+}
+
+// ════════════════════════════════════════════
+// PNL
+// ════════════════════════════════════════════
+const pnlRows=[
+  {lbl:"Реализованный PnL",   val:D.pnl.realized_usd},
+  {lbl:"Нереализованный PnL", val:D.pnl.unrealized_usd},
+  {lbl:"Заработано комиссий", val:D.pnl.fees_earned_usd},
+  {lbl:"Потери на IL",        val:-Math.abs(D.pnl.il_losses_usd)},
+];
+document.getElementById("pnlCard").innerHTML =
+  pnlRows.map(r=>`<div class="pnl-row">
+    <span class="pnl-lbl">${r.lbl}</span>
+    <span class="pnl-val" style="color:${clr(r.val)}">${fmt(r.val)}</span>
+  </div>`).join("") +
+  `<div class="pnl-row pnl-total">
+    <span class="pnl-lbl">Итого Net PnL</span>
+    <span class="pnl-val" style="color:${clr(D.pnl.net_usd)}">${fmt(D.pnl.net_usd)}</span>
+  </div>`;
+
+// ════════════════════════════════════════════
+// RISK
+// ════════════════════════════════════════════
+[["rLow","low"],["rMed","medium"],["rHigh","high"]].forEach(([id,key])=>{
+  document.getElementById(id).innerHTML=(D.risk[key]||[]).map(r=>`
+    <div class="risk-item">
+      <div class="risk-name">${r.name}</div>
+      <div class="risk-detail">${r.detail}</div>
+      ${r.usd?`<div class="risk-usd">${fmt(r.usd)}</div>`:""}
+    </div>`).join("") || `<div class="risk-item" style="color:var(--text3)">—</div>`;
+});
+
+// ════════════════════════════════════════════
+// RECS + OPPS
+// ════════════════════════════════════════════
+document.getElementById("recsCont").innerHTML=D.recommendations.map(r=>`
+  <div class="rec-card">
+    <div class="rec-priority">${r.priority}</div>
+    <div>
+      <div class="rec-title">${r.title}</div>
+      <div class="rec-detail">
+        <span class="rec-key">Что:</span><span>${r.what}</span>
+        <span class="rec-key">Почему:</span><span>${r.why}</span>
+        <span class="rec-key">Куда:</span><span>${r.where}</span>
+      </div>
+      <div class="rec-gas-row">Газ: ${r.gas_est} · Эффект: ${r.effect}</div>
+    </div>
+  </div>`).join("");
+
+document.getElementById("oppsCont").innerHTML=D.opportunities.map(o=>`
+  <div class="opp-card">
+    <div class="opp-top">
+      <div>
+        <div class="opp-name">#${o.rank} · ${o.protocol} · ${o.pair}</div>
+        <div class="opp-sub">${o.network} · TVL $${o.tvl_m}M · ${o.risk}</div>
+      </div>
+      <div class="opp-apy">${o.apy.toFixed(2)}%</div>
+    </div>
+    <div class="opp-why">💡 ${o.why}</div>
+  </div>`).join("");
+
+// ════════════════════════════════════════════
+// DCA CALCULATOR
+// ════════════════════════════════════════════
+function calcDCA() {
+  const amount   = +document.getElementById("dcaAmount").value || 5000;
+  const price    = +document.getElementById("dcaPrice").value  || 2316;
+  const rangePct = +document.getElementById("dcaRange").value  || 10;
+  const days     = Math.min(14, Math.max(1, +document.getElementById("dcaDays").value || 7));
+  const apy      = +document.getElementById("dcaApy").value    || 27;
+
+  const upperPrice = price;           // открываем пул на текущей цене как верхней границе
+  const lowerPrice = price * (1 - rangePct / 100);
+  const dailyAmt   = amount / days;   // равномерное распределение
+
+  // Симуляция: цена падает линейно на rangePct/2 к середине недели, потом боковик
+  const priceSimulation = Array.from({length: days}, (_, i) => {
+    const t = i / (days - 1);
+    return price * (1 - (rangePct / 2 / 100) * Math.sin(Math.PI * t));
+  });
+
+  // Сколько ETH куплено в каждый день (упрощённая модель LP conversion)
+  let totalUsdc = amount;
+  let totalEth  = 0;
+  let ethBought = [];
+
+  priceSimulation.forEach((dayPrice, i) => {
+    const conversionFactor = dayPrice < upperPrice
+      ? Math.min(1, (upperPrice - dayPrice) / (upperPrice - lowerPrice))
+      : 0;
+    const dayConvert = dailyAmt * conversionFactor;
+    const dayEth     = dayConvert / dayPrice;
+    totalEth  += dayEth;
+    totalUsdc -= dayConvert;
+    ethBought.push({ day: i+1, price: dayPrice, usdcUsed: dayConvert, ethGot: dayEth });
+  });
+
+  const totalEthUsd  = totalEth * price;
+  const feesEarned   = amount * (apy / 100) * (days / 365);
+  const remainUsdc   = Math.max(0, totalUsdc);
+  const avgEthPrice  = totalEth > 0 ? (amount - remainUsdc) / totalEth : price;
+
+  // HTML
+  const barWidth = 220;
+  const usedPct  = Math.round((1 - remainUsdc / amount) * 100);
+
+  document.getElementById("dcaResult").innerHTML = `
+    <div class="dca-visual">
+      <div class="dca-vis-lbl">Ценовой диапазон LP позиции</div>
+      <div class="dca-price-bar">
+        <div class="dca-range-fill" style="left:0;width:100%"></div>
+        <div class="dca-entry-line" style="left:100%"></div>
+        <div class="dca-now-line"   style="left:${Math.max(5,Math.min(95, 100*(1-(price*(1-rangePct/200)-lowerPrice)/(upperPrice-lowerPrice))))}%"></div>
+      </div>
+      <div class="dca-price-labels">
+        <span>$${lowerPrice.toLocaleString("en",{maximumFractionDigits:0})} <span style="color:var(--text3)">(нижняя)</span></span>
+        <span style="color:var(--accent)">← диапазон покупок ETH</span>
+        <span>$${upperPrice.toLocaleString("en",{maximumFractionDigits:0})} <span style="color:var(--text3)">(вход)</span></span>
+      </div>
+    </div>
+
+    <div class="dca-timeline">
+      ${ethBought.map(d=>`
+        <div class="dca-day ${d.ethGot>0.001?"filled":"partial"}">
+          <div class="dca-day-lbl">День ${d.day}</div>
+          <div class="dca-day-val" style="color:${d.ethGot>0.001?"var(--success)":"var(--text2)"}">
+            ${d.ethGot>0.001?"+"+d.ethGot.toFixed(4)+" ETH":"—"}
+          </div>
+          <div class="dca-day-sub">$${Math.round(d.price).toLocaleString()}</div>
+        </div>`).join("")}
+    </div>
+
+    <div class="dca-summary-grid">
+      <div class="dca-sum-item">
+        <div class="dca-sum-lbl">Куплено ETH</div>
+        <div class="dca-sum-val" style="color:var(--success)">${totalEth.toFixed(4)}</div>
+        <div style="font-size:11px;color:var(--text3);margin-top:2px">≈ $${Math.round(totalEthUsd).toLocaleString()}</div>
+      </div>
+      <div class="dca-sum-item">
+        <div class="dca-sum-lbl">Средняя цена</div>
+        <div class="dca-sum-val">$${Math.round(avgEthPrice).toLocaleString()}</div>
+        <div style="font-size:11px;color:var(--text3);margin-top:2px">vs $${price.toLocaleString()} текущая</div>
+      </div>
+      <div class="dca-sum-item">
+        <div class="dca-sum-lbl">Комиссии LP</div>
+        <div class="dca-sum-val" style="color:var(--success)">+$${feesEarned.toFixed(2)}</div>
+        <div style="font-size:11px;color:var(--text3);margin-top:2px">за ${days} дней при ${apy}%</div>
+      </div>
+      <div class="dca-sum-item">
+        <div class="dca-sum-lbl">Остаток USDC</div>
+        <div class="dca-sum-val" style="color:${remainUsdc>100?"var(--warn)":"var(--text2)"}">$${Math.round(remainUsdc).toLocaleString()}</div>
+        <div style="font-size:11px;color:var(--text3);margin-top:2px">${usedPct}% конвертировано</div>
+      </div>
+    </div>
+
+    ${remainUsdc > 50 ? `
+    <div class="dca-fallback-box">
+      <div class="dca-fallback-icon">🏦</div>
+      <div class="dca-fallback-text">
+        <strong>Остаток $${Math.round(remainUsdc)} → Aave v3 (Arbitrum)</strong>
+        Цена не дошла до нижней границы диапазона. Закрыть LP позицию и депозитировать остаток USDC в Aave как залоговый актив.
+        Текущий supply APY USDC на Aave Arbitrum: ~1.54% · Газ закрытия: ~$1.20
+      </div>
+    </div>` : `
+    <div class="dca-fallback-box" style="border-color:rgba(74,222,128,0.2)">
+      <div class="dca-fallback-icon">✅</div>
+      <div class="dca-fallback-text">
+        <strong>Весь USDC конвертирован в ETH</strong>
+        Цена прошла через весь диапазон. LP позицию можно закрыть — все средства уже в ETH.
+      </div>
+    </div>`}
+  `;
+
+  document.getElementById("dcaResult").classList.add("visible");
+}
+</script>
+</body>
+</html>
