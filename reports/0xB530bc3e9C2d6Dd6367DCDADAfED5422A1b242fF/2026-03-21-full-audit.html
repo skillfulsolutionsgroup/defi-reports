@@ -258,346 +258,245 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 14p
 <script>
 window.PORTFOLIO_DATA = {
   "meta": {
-    "date": "2026-03-21",
+    "wallet_evm": "0xB530bc3e9C2d6Dd6367DCDADAfED5422A1b242fF",
+    "wallet_aptos": "0xc7844f8a7d0e3bfc3dfe225dcf944729f2f8b6d75f581ed18459dc5ae40ba646",
     "generated_at": "2026-03-21T04:30:00Z",
-    "user_id": "0xB530bc3e9C2d6Dd6367DCDADAfED5422A1b242fF",
-    "version": "3.0",
-    "sources": [
-      "alchemy",
-      "moralis",
-      "zerion",
-      "manual/aave-ui"
-    ]
+    "version": "3.0"
   },
   "summary": {
-    "total_portfolio_usd": 21073.14,
-    "total_collateral_usd": 10391.21,
-    "total_debt_usd": 4156.97,
-    "net_aave_position_usd": 6234.24,
-    "health_factor": 1.9857,
-    "health_factor_source": "alchemy/eth_call/arb-mainnet",
-    "liq_threshold_pct": 79.43,
-    "ltv_pct": 75.81,
-    "drop_to_liquidation_usd": 5157.71,
-    "drop_to_liquidation_pct": 49.6,
-    "eth_price_usd": 2156.33,
-    "wsteth_price_usd": 2647.83
-  },
-  "chains": {
-    "arbitrum": {
-      "wallet_assets": [
-        {
-          "symbol": "wstETH",
-          "qty": 1.8089110706815759,
-          "value_usd": 4796.03,
-          "chain": "arbitrum",
-          "type": "wallet"
-        },
-        {
-          "symbol": "USDC",
-          "qty": 3900.003455,
-          "value_usd": 3900.37,
-          "chain": "arbitrum",
-          "type": "wallet"
-        },
-        {
-          "symbol": "WETH",
-          "qty": 0.7838484484279757,
-          "value_usd": 1688.63,
-          "chain": "arbitrum",
-          "type": "wallet"
-        },
-        {
-          "symbol": "ARB",
-          "qty": 1659.6007106571697,
-          "value_usd": 165.7,
-          "chain": "arbitrum",
-          "type": "wallet"
-        },
-        {
-          "symbol": "WBTC",
-          "qty": 0.0052591085430037,
-          "value_usd": 11.33,
-          "chain": "arbitrum",
-          "type": "wallet"
-        },
-        {
-          "symbol": "LINK",
-          "qty": 0.0042268027346134,
-          "value_usd": 9.11,
-          "chain": "arbitrum",
-          "type": "wallet"
-        }
-      ],
-      "aave_v3": {
-        "protocol": "Aave v3",
-        "chain": "arbitrum",
-        "health_factor": 1.9857,
-        "health_factor_source": "alchemy/eth_call",
-        "net_apy_pct": -0.455,
-        "total_collateral_usd": 10391.21,
-        "total_debt_usd": 4156.97,
-        "net_position_usd": 6234.24,
-        "available_borrows_usd": 3720.61,
-        "liq_threshold_pct": 79.43,
-        "ltv_pct": 75.81,
-        "drop_to_liquidation_usd": 5157.71,
-        "drop_to_liquidation_pct": 49.6,
-        "supplied": [
-          {
-            "symbol": "wstETH",
-            "token": "aArbwstETH",
-            "qty": 1.8089114961745445,
-            "value_usd": 4789.69,
-            "apy_pct": 0.000155,
-            "is_collateral": true
-          },
-          {
-            "symbol": "USDC",
-            "token": "aArbUSDCn",
-            "qty": 3900.975089,
-            "value_usd": 3900.98,
-            "apy_pct": 1.489,
-            "is_collateral": true
-          },
-          {
-            "symbol": "WETH",
-            "token": "aArbWETH",
-            "qty": 0.7841080715519922,
-            "value_usd": 1688.05,
-            "apy_pct": 1.705,
-            "is_collateral": true
-          }
-        ],
-        "borrowed": [
-          {
-            "symbol": "USDC",
-            "token": "variableDebtArbUSDCn",
-            "qty": 2589.516834,
-            "value_usd": 2589.52,
-            "apy_pct": 2.739,
-            "is_variable": true
-          },
-          {
-            "symbol": "USDT",
-            "token": "variableDebtArbUSDT",
-            "qty": 1567.656143,
-            "value_usd": 1567.66,
-            "apy_pct": 2.825,
-            "is_variable": true
-          }
-        ]
+    "total_usd": 21107.05,
+    "change_24h_usd": 0,
+    "change_24h_pct": 0,
+    "by_network": {
+      "Arbitrum": {
+        "usd": 18960.05,
+        "pct": 89.8
       },
-      "uniswap_v3_lp": {
-        "protocol": "Uniswap v3",
-        "chain": "arbitrum",
-        "nft_manager": "0xC36442b4a4522E871399CD717aBDD847Ab11FE88",
-        "current_eth_price_usd": 2156.33,
-        "current_tick": -199559,
-        "pool_address": "0xc6962004f452be9203591991d15f6b388e09e8d0",
-        "total_positions": 7,
-        "active_positions": 3,
-        "total_lp_value_usd": 2104.18,
-        "total_unclaimed_fees_usd": 14.37,
-        "positions": [
-          {
-            "token_id": 5178404,
-            "pair": "WETH/USDT",
-            "fee_tier": "0.05%",
-            "tick_lower": -197390,
-            "tick_upper": -195710,
-            "liquidity": 0,
-            "status": "CLOSED",
-            "value_usd": 0
-          },
-          {
-            "token_id": 5223124,
-            "pair": "WETH/USDC",
-            "fee_tier": "0.05%",
-            "tick_lower": -196020,
-            "tick_upper": -194780,
-            "liquidity": 0,
-            "status": "CLOSED",
-            "value_usd": 0
-          },
-          {
-            "token_id": 5226114,
-            "pair": "ARB/USDC",
-            "fee_tier": "0.05%",
-            "tick_lower": -292930,
-            "tick_upper": -290190,
-            "liquidity": 0,
-            "status": "CLOSED",
-            "value_usd": 0
-          },
-          {
-            "token_id": 5242734,
-            "pair": "WETH/USDC",
-            "fee_tier": "0.05%",
-            "tick_lower": -198260,
-            "tick_upper": -195850,
-            "liquidity": 0,
-            "status": "CLOSED",
-            "value_usd": 0
-          },
-          {
-            "token_id": 5259758,
-            "pair": "WETH/USDC",
-            "fee_tier": "0.05%",
-            "tick_lower": -199740,
-            "tick_upper": -197620,
-            "price_lower_usd": 2117.56,
-            "price_upper_usd": 2617.59,
-            "liquidity": 93272301994981,
-            "status": "IN_RANGE",
-            "value_usd": 627.82,
-            "unclaimed_fees_usd": 6.19,
-            "weth_amount": 0.09346760009034032,
-            "usdc_amount": 420.402958
-          },
-          {
-            "token_id": 5285405,
-            "pair": "WETH/USDC",
-            "fee_tier": "0.05%",
-            "tick_lower": -203490,
-            "tick_upper": -199730,
-            "price_lower_usd": 1455.4,
-            "price_upper_usd": 2119.68,
-            "liquidity": 130493916711570,
-            "status": "OUT_OF_RANGE",
-            "value_usd": 1030.18,
-            "unclaimed_fees_usd": 0.55,
-            "weth_amount": 0,
-            "usdc_amount": 1029.633217
-          },
-          {
-            "token_id": 5365472,
-            "pair": "WETH/USDC",
-            "fee_tier": "0.05%",
-            "tick_lower": -200740,
-            "tick_upper": -199000,
-            "price_lower_usd": 1916.06,
-            "price_upper_usd": 2280.19,
-            "liquidity": 157763323616518,
-            "status": "IN_RANGE",
-            "value_usd": 446.18,
-            "unclaimed_fees_usd": 7.62,
-            "weth_amount": 0.18548775692514058,
-            "usdc_amount": 39.23398
-          }
-        ]
+      "Aptos": {
+        "usd": 2147.0,
+        "pct": 10.2
       }
     },
-    "ethereum": {
-      "wallet_assets": [
-        {
-          "symbol": "ETH",
-          "qty": 0.0163575060077827,
-          "value_usd": 35.27,
-          "chain": "ethereum",
-          "type": "wallet"
-        }
-      ],
-      "aave_v3": {
-        "protocol": "Aave v3",
-        "chain": "ethereum",
-        "health_factor": null,
-        "note": "No active positions on Ethereum Aave v3 (all zeros)"
-      }
-    },
-    "optimism": {
-      "wallet_assets": [
-        {
-          "symbol": "OP",
-          "qty": 106.70609064,
-          "value_usd": 13.13,
-          "chain": "optimism",
-          "type": "wallet"
-        }
-      ]
-    },
-    "base": {
-      "wallet_assets": [
-        {
-          "symbol": "USDC",
-          "qty": 1.329384,
-          "value_usd": 1.33,
-          "chain": "base",
-          "type": "wallet"
-        },
-        {
-          "symbol": "ETH",
-          "qty": 0.0003426551557418,
-          "value_usd": 0.74,
-          "chain": "base",
-          "type": "wallet"
-        }
-      ]
-    },
-    "aptos": {
-      "source": "manual/aave-ui",
-      "note": "Aptos positions via Object Model (CoinStore empty). Data from Aave UI.",
-      "aave_v3": {
-        "protocol": "Aave v3",
-        "chain": "aptos",
-        "total_collateral_usd": 2147.15,
-        "net_position_usd": 2147.0,
-        "apy_pct": 4.68,
-        "supplied": [
-          {
-            "symbol": "APT",
-            "value_usd": 141.89,
-            "source": "manual/aave-ui"
-          },
-          {
-            "symbol": "USDC",
-            "value_usd": 2005.26,
-            "source": "manual/aave-ui"
-          }
-        ],
-        "borrowed": []
+    "by_type": {
+      "Lending": {
+        "usd": 8381.24,
+        "pct": 39.7
+      },
+      "LP": {
+        "usd": 2104.18,
+        "pct": 10.0
+      },
+      "Wallet": {
+        "usd": 10621.63,
+        "pct": 50.3
       }
     }
   },
-  "portfolio_breakdown": {
-    "wallet_assets_usd": 10621.63,
-    "aave_arb_net_usd": 6234.24,
-    "uniswap_lp_usd": 2104.18,
-    "aptos_aave_usd": 2147.0,
-    "unclaimed_fees_usd": 14.37,
-    "total_usd": 21107.05
-  },
-  "risks": {
+  "aave": {
     "health_factor": 1.9857,
-    "health_factor_status": "SAFE",
-    "health_factor_threshold": 1.0,
-    "liquidation_risk": "LOW",
-    "drop_to_liquidation_pct": 49.6,
-    "lp_out_of_range_count": 1,
-    "lp_in_range_count": 2,
-    "lp_closed_count": 4,
-    "alerts": [
+    "collateral_usd": 10391.21,
+    "debt_usd": 4156.97,
+    "net_usd": 6234.24,
+    "available_borrows": 3720.61,
+    "ltv_pct": 75.81,
+    "liq_threshold_pct": 79.43,
+    "liq_buffer_pct": 49.6,
+    "reserves": [
       {
-        "level": "INFO",
-        "message": "LP position #5285405 (WETH/USDC) is OUT OF RANGE. Current ETH price $2156 is above upper bound $2119.68. Position is 100% USDC."
+        "symbol": "wstETH",
+        "usd": 4789.69,
+        "supply_apy": 0.000155
       },
       {
-        "level": "INFO",
-        "message": "Health Factor 1.99 — safe zone. Drop of 49.6% needed to trigger liquidation."
+        "symbol": "USDC",
+        "usd": 3900.98,
+        "supply_apy": 1.489
+      },
+      {
+        "symbol": "WETH",
+        "usd": 1688.05,
+        "supply_apy": 1.705
+      }
+    ],
+    "debts": [
+      {
+        "symbol": "USDC",
+        "usd": 2589.52,
+        "borrow_apy": 2.739
+      },
+      {
+        "symbol": "USDT",
+        "usd": 1567.66,
+        "borrow_apy": 2.825
       }
     ]
   },
-  "prices": {
-    "ETH": 2156.33,
-    "WETH": 2156.33,
-    "wstETH": 2647.83,
-    "USDC": 1.0,
-    "USDT": 1.0,
-    "ARB": 0.0999,
-    "OP": 0.123,
-    "APT": 5.68,
-    "source": "moralis/zerion/alchemy"
-  }
+  "lp_positions": [
+    {
+      "id": "5259758",
+      "pair": "WETH/USDC",
+      "protocol": "Uniswap v3",
+      "network": "Arbitrum",
+      "status": "in_range",
+      "usd_value": 627.82,
+      "range_lower_price": 2117.56,
+      "range_upper_price": 2617.59,
+      "current_price": 2156.33,
+      "unclaimed_fees_usd": 6.19,
+      "claimed_fees_usd": 0,
+      "fees_earned_usd": 6.19,
+      "il_pct": null,
+      "il_usd": null,
+      "net_roi_pct": null,
+      "apy_current": null,
+      "entry_date": null,
+      "token0": {
+        "symbol": "WETH",
+        "price_current": 2156.33
+      },
+      "token1": {
+        "symbol": "USDC"
+      }
+    },
+    {
+      "id": "5285405",
+      "pair": "WETH/USDC",
+      "protocol": "Uniswap v3",
+      "network": "Arbitrum",
+      "status": "out_of_range",
+      "usd_value": 1030.18,
+      "range_lower_price": 1455.4,
+      "range_upper_price": 2119.68,
+      "current_price": 2156.33,
+      "unclaimed_fees_usd": 0.55,
+      "claimed_fees_usd": 0,
+      "fees_earned_usd": 0.55,
+      "il_pct": null,
+      "il_usd": null,
+      "net_roi_pct": null,
+      "apy_current": null,
+      "entry_date": null,
+      "token0": {
+        "symbol": "WETH",
+        "price_current": 2156.33
+      },
+      "token1": {
+        "symbol": "USDC"
+      }
+    },
+    {
+      "id": "5365472",
+      "pair": "WETH/USDC",
+      "protocol": "Uniswap v3",
+      "network": "Arbitrum",
+      "status": "in_range",
+      "usd_value": 446.18,
+      "range_lower_price": 1916.06,
+      "range_upper_price": 2280.19,
+      "current_price": 2156.33,
+      "unclaimed_fees_usd": 7.62,
+      "claimed_fees_usd": 0,
+      "fees_earned_usd": 7.62,
+      "il_pct": null,
+      "il_usd": null,
+      "net_roi_pct": null,
+      "apy_current": null,
+      "entry_date": null,
+      "token0": {
+        "symbol": "WETH",
+        "price_current": 2156.33
+      },
+      "token1": {
+        "symbol": "USDC"
+      }
+    }
+  ],
+  "pnl": {
+    "realized_usd": 0,
+    "unrealized_usd": 0,
+    "fees_earned_usd": 14.37,
+    "il_losses_usd": 0,
+    "net_usd": 14.37
+  },
+  "risk": {
+    "low": [
+      {
+        "name": "Aave v3 Arbitrum",
+        "detail": "HF 1.9857 · TVL $26B · OpenZeppelin audit",
+        "usd": 6234.24
+      }
+    ],
+    "medium": [
+      {
+        "name": "LP #5285405 OUT OF RANGE",
+        "detail": "100% USDC, fees не начисляются",
+        "usd": 1030
+      }
+    ],
+    "high": []
+  },
+  "recommendations": [
+    {
+      "priority": "🔴 СРОЧНО",
+      "title": "Ребалансировать LP #5285405",
+      "what": "Закрыть и открыть новый диапазон выше $2,156",
+      "why": "OUT OF RANGE — $1,030 не генерирует комиссии",
+      "where": "Uniswap v3 Arbitrum",
+      "gas_est": "~$2",
+      "effect": "+fees"
+    },
+    {
+      "priority": "🟡 ВАЖНО",
+      "title": "Aave Net APY отрицательный (-0.46%)",
+      "what": "Погасить часть USDT долга или переложить залог",
+      "why": "Стоимость займа превышает доходность залога",
+      "where": "Aave v3 Arbitrum",
+      "gas_est": "~$1",
+      "effect": "Улучшение APY"
+    },
+    {
+      "priority": "🟢 ДОЛГОСРОЧНО",
+      "title": "Алерт при HF < 1.5",
+      "what": "Настроить heartbeat мониторинг",
+      "why": "HF 1.99 — падение ETH на 49% → ликвидация",
+      "where": "DeFiSense heartbeat",
+      "gas_est": "~$0",
+      "effect": "Защита позиции"
+    }
+  ],
+  "opportunities": [
+    {
+      "rank": 1,
+      "protocol": "Uniswap v3",
+      "network": "Arbitrum",
+      "pair": "WETH/USDC",
+      "apy": 11.54,
+      "tvl_m": 54.2,
+      "risk": "🟡 Средний",
+      "why": "LP #5365472 in-range, APR 11.5% — оптимизировать ширину диапазона"
+    },
+    {
+      "rank": 2,
+      "protocol": "Aave v3",
+      "network": "Arbitrum",
+      "pair": "USDC supply",
+      "apy": 1.49,
+      "tvl_m": 2600,
+      "risk": "🟢 Низкий",
+      "why": "Свободный USDC в кошельке ($3,900) — добавить в залог"
+    },
+    {
+      "rank": 3,
+      "protocol": "Aries Markets",
+      "network": "Aptos",
+      "pair": "APT/USDC",
+      "apy": 4.68,
+      "tvl_m": 45,
+      "risk": "🟡 Средний",
+      "why": "Активная позиция $2,147 с APY 4.68% — мониторить"
+    }
+  ],
+  "sparkline": []
 };
 </script>
 <!-- DATA_INJECT_END -->
