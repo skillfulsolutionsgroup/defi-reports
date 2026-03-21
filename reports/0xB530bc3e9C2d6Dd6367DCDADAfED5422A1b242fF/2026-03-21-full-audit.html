@@ -297,7 +297,7 @@ window.PORTFOLIO_DATA = {
     "collateral_usd": 10391.21,
     "debt_usd": 4156.97,
     "net_usd": 6234.24,
-    "available_borrows": 3720.61,
+    "available_borrows_usd": 3720.61,
     "ltv_pct": 75.81,
     "liq_threshold_pct": 79.43,
     "liq_buffer_pct": 49.6,
@@ -331,171 +331,116 @@ window.PORTFOLIO_DATA = {
       }
     ]
   },
+  "aptos_aave": {
+    "net_worth_usd": 0,
+    "net_apy": 0,
+    "supplies": [],
+    "borrows": [],
+    "source": "manual/aave-ui"
+  },
   "lp_positions": [
     {
       "id": "5259758",
+      "position_id": "#5259758",
       "pair": "WETH/USDC",
       "protocol": "Uniswap v3",
       "network": "Arbitrum",
+      "fee_tier": "0.05%",
       "status": "in_range",
       "usd_value": 627.82,
+      "pnl_usd": 0,
       "range_lower_price": 2117.56,
       "range_upper_price": 2617.59,
       "current_price": 2156.33,
       "unclaimed_fees_usd": 6.19,
       "claimed_fees_usd": 0,
+      "total_fees_lifetime_usd": 6.19,
       "fees_earned_usd": 6.19,
       "il_pct": null,
       "il_usd": null,
       "net_roi_pct": null,
       "apy_current": null,
       "entry_date": null,
-      "token0": {
-        "symbol": "WETH",
-        "price_current": 2156.33
-      },
-      "token1": {
-        "symbol": "USDC"
-      }
+      "days_active": 0,
+      "days_out_of_range": 0
     },
     {
       "id": "5285405",
+      "position_id": "#5285405",
       "pair": "WETH/USDC",
       "protocol": "Uniswap v3",
       "network": "Arbitrum",
+      "fee_tier": "0.05%",
       "status": "out_of_range",
       "usd_value": 1030.18,
+      "pnl_usd": 0,
       "range_lower_price": 1455.4,
       "range_upper_price": 2119.68,
       "current_price": 2156.33,
       "unclaimed_fees_usd": 0.55,
       "claimed_fees_usd": 0,
+      "total_fees_lifetime_usd": 0.55,
       "fees_earned_usd": 0.55,
       "il_pct": null,
       "il_usd": null,
       "net_roi_pct": null,
       "apy_current": null,
       "entry_date": null,
-      "token0": {
-        "symbol": "WETH",
-        "price_current": 2156.33
-      },
-      "token1": {
-        "symbol": "USDC"
-      }
+      "days_active": 0,
+      "days_out_of_range": 0
     },
     {
       "id": "5365472",
+      "position_id": "#5365472",
       "pair": "WETH/USDC",
       "protocol": "Uniswap v3",
       "network": "Arbitrum",
+      "fee_tier": "0.05%",
       "status": "in_range",
       "usd_value": 446.18,
+      "pnl_usd": 0,
       "range_lower_price": 1916.06,
       "range_upper_price": 2280.19,
       "current_price": 2156.33,
       "unclaimed_fees_usd": 7.62,
       "claimed_fees_usd": 0,
+      "total_fees_lifetime_usd": 7.62,
       "fees_earned_usd": 7.62,
       "il_pct": null,
       "il_usd": null,
       "net_roi_pct": null,
       "apy_current": null,
       "entry_date": null,
-      "token0": {
-        "symbol": "WETH",
-        "price_current": 2156.33
-      },
-      "token1": {
-        "symbol": "USDC"
-      }
+      "days_active": 0,
+      "days_out_of_range": 0
     }
   ],
   "pnl": {
     "realized_usd": 0,
+    "fees_claimed_usd": 0,
     "unrealized_usd": 0,
     "fees_earned_usd": 14.37,
-    "il_losses_usd": 0,
+    "il_losses_usd": null,
     "net_usd": 14.37
   },
   "risk": {
-    "low": [
-      {
-        "name": "Aave v3 Arbitrum",
-        "detail": "HF 1.9857 · TVL $26B · OpenZeppelin audit",
-        "usd": 6234.24
-      }
-    ],
+    "low": [],
     "medium": [
       {
-        "name": "LP #5285405 OUT OF RANGE",
-        "detail": "100% USDC, fees не начисляются",
-        "usd": 1030
+        "name": "Aave v3 Arbitrum",
+        "detail": "HF 1.9857 · TVL templates/audit-report.html6B · OpenZeppelin audit",
+        "usd": 0
+      },
+      {
+        "name": "LP OUT OF RANGE",
+        "detail": "LP position #5285405 (WETH/USDC) is OUT OF RANGE. Current ETH price $2156 is abo",
+        "usd": 0
       }
     ],
     "high": []
   },
-  "recommendations": [
-    {
-      "priority": "🔴 СРОЧНО",
-      "title": "Ребалансировать LP #5285405",
-      "what": "Закрыть и открыть новый диапазон выше $2,156",
-      "why": "OUT OF RANGE — $1,030 не генерирует комиссии",
-      "where": "Uniswap v3 Arbitrum",
-      "gas_est": "~$2",
-      "effect": "+fees"
-    },
-    {
-      "priority": "🟡 ВАЖНО",
-      "title": "Aave Net APY отрицательный (-0.46%)",
-      "what": "Погасить часть USDT долга или переложить залог",
-      "why": "Стоимость займа превышает доходность залога",
-      "where": "Aave v3 Arbitrum",
-      "gas_est": "~$1",
-      "effect": "Улучшение APY"
-    },
-    {
-      "priority": "🟢 ДОЛГОСРОЧНО",
-      "title": "Алерт при HF < 1.5",
-      "what": "Настроить heartbeat мониторинг",
-      "why": "HF 1.99 — падение ETH на 49% → ликвидация",
-      "where": "DeFiSense heartbeat",
-      "gas_est": "~$0",
-      "effect": "Защита позиции"
-    }
-  ],
-  "opportunities": [
-    {
-      "rank": 1,
-      "protocol": "Uniswap v3",
-      "network": "Arbitrum",
-      "pair": "WETH/USDC",
-      "apy": 11.54,
-      "tvl_m": 54.2,
-      "risk": "🟡 Средний",
-      "why": "LP #5365472 in-range, APR 11.5% — оптимизировать ширину диапазона"
-    },
-    {
-      "rank": 2,
-      "protocol": "Aave v3",
-      "network": "Arbitrum",
-      "pair": "USDC supply",
-      "apy": 1.49,
-      "tvl_m": 2600,
-      "risk": "🟢 Низкий",
-      "why": "Свободный USDC в кошельке ($3,900) — добавить в залог"
-    },
-    {
-      "rank": 3,
-      "protocol": "Aries Markets",
-      "network": "Aptos",
-      "pair": "APT/USDC",
-      "apy": 4.68,
-      "tvl_m": 45,
-      "risk": "🟡 Средний",
-      "why": "Активная позиция $2,147 с APY 4.68% — мониторить"
-    }
-  ],
+  "recommendations": [],
+  "opportunities": [],
   "sparkline": []
 };
 </script>
