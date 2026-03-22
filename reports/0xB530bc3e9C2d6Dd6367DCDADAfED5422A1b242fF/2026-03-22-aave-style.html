@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DeFiSense — Aave Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;700&family=Geist:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+    --bg: #f5f5f7;
+    --bg2: #ffffff;
+    --bg3: #f0f0f5;
+    --bg4: #e8e8ef;
+    --border: #e2e2ea;
+    --border2: #d0d0dc;
+    --text: #1a1a2e;
+    --text2: #5a5a78;
+    --text3: #9090aa;
+    --accent: #5b4de0;
+    --accent2: #2e7dd1;
+    --success: #16a34a;
+    --warn: #d97706;
+    --danger: #dc2626;
+    --radius: 8px;
+    --radius2: 12px;
+    --font-sans: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --font-mono: 'Geist Mono', monospace;
+}
+[data-theme="dark"] {
+    --bg: #0f0f11;
+    --bg2: #17181c;
+    --bg3: #1e1f25;
+    --bg4: #25262e;
+    --border: #2a2b35;
+    --border2: #353647;
+    --text: #e8e9f0;
+    --text2: #8b8fa8;
+    --text3: #55576e;
+    --accent: #7c6af7;
+    --accent2: #5bb8f5;
+    --success: #4ade80;
+    --warn: #f59e0b;
+    --danger: #f87171;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; }
+body { background: var(--bg); color: var(--text); font-family: var(--font-sans); line-height: 1.6; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+button { cursor: pointer; }
+
+.container { max-width: 960px; margin: 0 auto; padding: 20px; }
+header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; flex-wrap: wrap; gap: 12px; }
+header .logo { display: flex; align-items: center; gap: 8px; }
+header .logo .icon { width: 32px; height: 32px; background: var(--accent); border-radius: var(--radius); display: flex; align-items: center; justify-content: center; color: #fff; font-weight: bold; }
+header .wallet { font-family: var(--font-mono); font-size: 0.9rem; color: var(--text2); }
+header .actions { display: flex; gap: 8px; align-items: center; }
+header .btn { padding: 6px 12px; border: 1px solid var(--border); background: var(--bg2); border-radius: var(--radius); font-size: 0.9rem; transition: background .2s; }
+header .btn:hover { background: var(--bg3); }
+header .btn.theme { background: transparent; border: none; font-size: 1.2rem; }
+
+.section { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius2); padding: 20px; margin-bottom: 24px; }
+.section h2 { margin-top: 0; margin-bottom: 16px; font-size: 1.25rem; color: var(--text); display: flex; align-items: center; gap: 8px; }
+.section h2 .icon { width: 24px; height: 24px; background: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 1rem; }
+
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 16px; }
+.stat { text-align: center; }
+.stat .label { font-size: 0.85rem; color: var(--text2); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
+.stat .value { font-family: var(--font-mono); font-size: 1.8rem; font-weight: 600; line-height: 1.2; }
+.stat .sub { font-size: 0.9rem; color: var(--text2); margin-top: 4px; }
+.stat .change { font-size: 0.9rem; margin-top: 8px; }
+.stat .change.positive { color: var(--success); }
+.stat .change.negative { color: var(--danger); }
+
+.gauge { position: relative; width: 180px; height: 180px; margin: 0 auto 20px; }
+.gauge canvas { width: 100%; height: 100%; }
+.gauge-label { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; }
+.gauge-label .value { font-family: var(--font-mono); font-size: 2rem; font-weight: 600; }
+.gauge-label .desc { font-size: 0.9rem; color: var(--text2); }
+
+.table { width: 100%; border-collapse: collapse; margin-top: 16px; }
+.table th, .table td { padding: 12px; text-align: left; border-bottom: 1px solid var(--border2); }
+.table th { font-weight: 600; color: var(--text2); font-size: 0.9rem; text-transform: uppercase; }
+.table tr:hover { background: var(--bg3); }
+.table .value { font-family: var(--font-mono); font-weight: 600; }
+.table .change { font-size: 0.85rem; }
+.table .change.positive { color: var(--success); }
+.table .change.negative { color: var(--danger); }
+
+.footer { text-align: center; font-size: 0.8rem; color: var(--text3); margin-top: 30px; padding-top: 16px; border-top: 1px solid var(--border2); }
+
+@media (max-width: 600px) {
+    header { flex-direction: column; align-items: flex-start; }
+    .stats { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+<div class="logo">
+<div class="icon">◈</div>
+<div>
+<div class="title">DeFiSense</div>
+<div class="subtitle">Aave v3 Dashboard</div>
+</div>
+</div>
+<div class="wallet" id="walletAddr">—</div>
+<div class="actions">
+<button class="btn theme" id="themeToggle" title="Переключить тему">🌙</button>
+<button class="btn" id="refreshBtn">Обновить</button>
+</div>
+</header>
+
+<div class="section">
+<h2><span class="icon">📊</span>Обзор</div>
+<div class="stats">
+<div class="stat">
+<div class="label">Общий портфель</div>
+<div class="value" id="totalPortfolio">$—</div>
+<div class="sub">total_value</div>
+</div>
+<div class="stat">
+<div class="label">Clean Net (Aave)</div>
+<div class="value" id="cleanNet">$—</div>
+<div class="sub">net_position</div>
+</div>
+<div class="stat">
+<div class="label">Health Factor</div>
+<div class="gauge">
+<canvas id="hfGauge"></canvas>
+<div class="gauge-label">
+<div class="value" id="hfValue">—</div>
+<div class="desc">HF</div>
+</div>
+</div>
+</div>
+<div class="stat">
+<div class="label">LTV %</div>
+<div class="value" id="ltvPct">—</div>
+</div>
+<div class="stat">
+<div class="label">Liquidation threshold %</div>
+<div class="value" id="liqThreshPct">—</div>
+</div>
+<div class="stat">
+<div class="label">ETH price</div>
+<div class="value" id="ethPrice">$—</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="section">
+<h2><span class="icon">🏦</span>Aave Positions</div>
+<div class="stats">
+<div class="stat">
+<div class="label">Залог (Collateral)</div>
+<div class="value" id="collateralUsd">$—</div>
+<div class="sub">total supplied</div>
+</div>
+<div class="stat">
+<div class="label">Долг (Debt)</div>
+<div class="value" id="debtUsd">$—</div>
+<div class="sub">total borrowed</div>
+</div>
+<div class="stat">
+<div class="label">Доступно в займы</div>
+<div class="value" id="availableBorrows">$—</div>
+<div class="sub">available borrows</div>
+</div>
+<div class="stat">
+<div class="label">Net APY %</div>
+<div class="value" id="netApy">—</div>
+</div>
+</div>
+</div>
+
+<div class="section">
+<h2><span class="icon">📋</span>Детали резервов</div>
+<table class="table">
+<thead>
+<tr>
+<th>Asset</th>
+<th>Supply USD</th>
+<th>Supply APY %</th>
+<th>Borrow USD</th>
+<th>Borrow APY %</th>
+<th>Net USD</th>
+</tr>
+</thead>
+<tbody id="reserveTableBody">
+<!-- rows will be inserted here -->
+</tbody>
+</table>
+</div>
+
+<div class="section">
+<h2><span class="icon">📈</span>PnL</div>
+<div class="stats">
+<div class="stat">
+<div class="label">Realized PnL</div>
+<div class="value" id="realizedPnl">$—</div>
+</div>
+<div class="stat">
+<div class="label">Unrealized PnL</div>
+<div class="value" id="unrealizedPnl">$—</div>
+</div>
+<div class="stat">
+<div class="label">Fees earned</div>
+<div class="value" id="feesEarnedUsd">$—</div>
+</div>
+<div class="stat">
+<div class="label">IL losses</div>
+<div class="value" id="ilLossesUsd">$—</div>
+</div>
+<div class="stat">
+<div class="label">Net PnL</div>
+<div class="value" id="netPnl">$—</div>
+</div>
+</div>
+</div>
+
+<div class="footer">
+Данные предоставлены только в информационных целях. Не является финансовым советом.
+</div>
+</div>
+
+<script>
+// --- Theme handling ---
+const STORAGE_KEY = 'ds-theme';
+const htmlEl = document.documentElement;
+const themeBtn = document.getElementById('themeToggle');
+const setTheme = (t) => {
+    htmlEl.setAttribute('data-theme', t);
+    localStorage.setItem(STORAGE_KEY, t);
+    themeBtn.innerHTML = t === 'dark' ? '☀️' : '🌙';
+};
+const current = localStorage.getItem(STORAGE_KEY) || 'light';
+setTheme(current);
+themeBtn.addEventListener('click', () => setTheme(current === 'light' ? 'dark' : 'light'));
+
+// --- Data ---
+const D = window.PORTFOLIO_DATA || {};
+if (!D.meta) {
+    console.warn('PORTFOLIO_DATA not found or empty');
+}
+
+// Helper formatters
+const fmt = (n, d=2) => n == null ? '—' : '$' + Number(n).toLocaleString('en-US', {minimumFractionDigits: d, maximumFractionDigits: d});
+const fmtRaw = (n, d=2) => n == null ? '—' : Number(n).toLocaleString(undefined, {minimumFractionDigits: d, maximumFractionDigits: d});
+const pct = (n) => n == null ? '—' : (n >= 0 ? '+' : '') + Number(n).toFixed(2) + '%';
+const clr = (n) => n > 0 ? 'var(--success)' : n < 0 ? 'var(--danger)' : 'var(--text2)';
+
+// --- Header wallet ---
+document.getElementById('walletAddr').textContent = (D.meta?.wallet_evm || '').slice(0,6) + '…' + (D.meta?.wallet_evm || '').slice(-4) || '—';
+
+// --- Overview stats ---
+document.getElementById('totalPortfolio').textContent = fmt(D.summary?.total_portfolio_usd);
+document.getElementById('cleanNet').textContent = fmt(D.summary?.net_aave_position_usd);
+document.getElementById('hfValue').textContent = fmtRaw(D.aave?.health_factor, 3);
+document.getElementById('ltvPct').textContent = pct(D.aave?.ltv_pct);
+document.getElementById('liqThreshPct).textContent = pct(D.aave?.liq_threshold_pct);
+document.getElementById('ethPrice').textContent = fmt(D.summary?.eth_price_usd);
+
+// Gauge rendering (simplified)
+function drawGauge(hf) {
+    const canvas = document.getElementById('hfGauge');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    const cx = canvas.width / 2;
+    const cy = canvas.height / 2;
+    const r = Math.min(cx, cy) - 10;
+    const maxHF = 3;
+    const zones = [
+        {from: 0, to: 1.2, color: '#dc2626'},
+        {from: 1.2, to: 1.5, color: '#f97316'},
+        {from: 1.5, to: 2.0, color: '#f59e0b'},
+        {from: 2.0, to: maxHF, color: '#16a34a'}
+    ];
+    // Draw background arc
+    ctx.beginPath();
+    ctx.arc(cx, cy, r, Math.PI, 2 * Math.PI);
+    ctx.lineWidth = 20;
+    ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue('--border') || '#e2e2ea';
+    ctx.stroke();
+    // Draw zones
+    zones.forEach(z => {
+        const a1 = Math.PI + (z.from / maxHF) * Math.PI;
+        const a2 = Math.PI + (Math.min(z.to, maxHF) / maxHF) * Math.PI;
+        ctx.beginPath();
+        ctx.arc(cx, cy, r, a1, a2);
+        ctx.strokeStyle = z.color;
+        ctx.lineWidth = 20;
+        ctx.stroke();
+    });
+    // Draw needle
+    if (hf != null && typeof hf === 'number') {
+        const clampedHF = Math.min(hf, maxHF);
+        const angle = Math.PI + (clampedHF / maxHF) * Math.PI;
+        ctx.save();
+        ctx.translate(cx, cy);
+        ctx.rotate(angle - Math.PI / 2);
+        ctx.beginPath();
+        ctx.moveTo(0, -10);
+        ctx.lineTo(0, -(r - 20));
+        ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue('--text') || '#1a1a2e';
+        ctx.lineWidth = 3;
+        ctx.stroke();
+        ctx.restore();
+    }
+    // Center dot
+    ctx.beginPath();
+    ctx.arc(cx, cy, 4, 0, 2 * Math.PI);
+    ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--text') || '#1a1a2e';
+    ctx.fill();
+}
+drawGauge(D.aave?.health_factor);
+
+// --- Aave positions ---
+document.getElementById('collateralUsd').textContent = fmt(D.aave?.collateral_usd);
+document.getElementById('debtUsd').textContent = fmt(D.aave?.debt_usd);
+document.getElementById('availableBorrows').textContent = fmt(D.aave?.available_borrows_usd);
+document.getElementById('netApy').textContent = pct(D.aave?.net_apy);
+
+// --- Reserve table ---
+function renderReserveTable() {
+    const tbody = document.getElementById('reserveTableBody');
+    if (!tbody) return;
+    tbody.innerHTML = '';
+    const reserves = D.aave?.reserves || [];
+    const debtsMap = {};
+    (D.aave?.debts || []).forEach(d => {
+        debtsMap[d.symbol] = d;
+    });
+    if (reserves.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6">No reserve data</td></tr>';
+        return;
+    }
+    reserves.forEach(r => {
+        const d = debtsMap[r.symbol] || {};
+        const supplyUsd = r.usd ?? 0;
+        const supplyApy = r.supply_apy ?? 0;
+        const debtUsd = d.usd ?? 0;
+        const debtApy = d.borrow_apy ?? 0;
+        const netUsd = supplyUsd - debtUsd;
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td>${r.symbol}</td>
+            <td>${fmt(supplyUsd)}</td>
+            <td>${pct(supplyApy)}</td>
+            <td>${fmt(debtUsd)}</td>
+            <td>${pct(debtApy)}</td>
+            <td>${fmt(netUsd)}</td>
+        `;
+        tbody.appendChild(tr);
+    });
+}
+renderReserveTable();
+
+// --- PnL ---
+document.getElementById('realizedPnl').textContent = fmt(D.pnl?.realized_usd);
+document.getElementById('unrealizedPnl').textContent = fmt(D.pnl?.unrealized_usd);
+document.getElementById('feesEarnedUsd').textContent = fmt(D.pnl?.fees_earned_usd);
+document.getElementById('ilLossesUsd').textContent = fmt(D.pnl?.il_losses_usd);
+document.getElementById('netPnl').textContent = fmt(D.pnl?.net_usd);
+
+// --- Refresh button ---
+document.getElementById('refreshBtn').addEventListener('click', () => {
+    window.location.reload();
+});
+</script>
+<!-- DATA_INJECT_START -->
+<script>
+window.PORTFOLIO_DATA = {
+  "meta": {
+    "date": "2026-03-22",
+    "generated_at": "2026-03-22 T00:00:00Z",
+    "user_id": "0xB530bc3e9C2d6Dd6367DCDADAfED5422A1b242fF",
+    "version": "3.0",
+    "sources": [
+      "alchemy",
+      "moralis",
+      "zerion",
+      "manual/aave-ui"
+    ]
+  },
+  "summary": {
+    "total_portfolio_usd": 21073.14,
+    "total_collateral_usd": 10391.21,
+    "total_debt_usd": 4156.97,
+    "net_aave_position_usd": 6234.24,
+    "health_factor": 1.9857,
+    "health_factor_source": "alchemy/eth_call/arb-mainnet",
+    "liq_threshold_pct": 79.43,
+    "ltv_pct": 75.81,
+    "drop_to_liquidation_usd": 5157.71,
+    "drop_to_liquidation_pct": 49.6,
+    "eth_price_usd": 2156.33,
+    "wsteth_price_usd": 2647.83
+  },
+  "chains": {
+    "arbitrum": {
+      "wallet_assets": [
+        {
+          "symbol": "wstETH",
+          "qty": 1.8089110706815759,
+          "value_usd": 4796.03,
+          "chain": "arbitrum",
+          "type": "wallet"
+        },
+        {
+          "symbol": "USDC",
+          "qty": 3900.003455,
+          "value_usd": 3900.37,
+          "chain": "arbitrum",
+          "type": "wallet"
+        },
+        {
+          "symbol": "WETH",
+          "qty": 0.7838484484279757,
+          "value_usd": 1688.63,
+          "chain": "arbitrum",
+          "type": "wallet"
+        },
+        {
+          "symbol": "ARB",
+          "qty": 1659.6007106571697,
+          "value_usd": 165.7,
+          "chain": "arbitrum",
+          "type": "wallet"
+        },
+        {
+          "symbol": "WBTC",
+          "qty": 0.0052591085430037,
+          "value_usd": 11.33,
+          "chain": "arbitrum",
+          "type": "wallet"
+        },
+        {
+          "symbol": "LINK",
+          "qty": 0.0042268027346134,
+          "value_usd": 9.11,
+          "chain": "arbitrum",
+          "type": "wallet"
+        }
+      ],
+      "aave_v3": {
+        "protocol": "Aave v3",
+        "chain": "arbitrum",
+        "health_factor": 1.9857,
+        "health_factor_source": "alchemy/eth_call",
+        "net_apy_pct": -0.455,
+        "total_collateral_usd": 10391.21,
+        "total_debt_usd": 4156.97,
+        "net_position_usd": 6234.24,
+        "available_borrows_usd": 3720.61,
+        "liq_threshold_pct": 79.43,
+        "ltv_pct": 75.81,
+        "drop_to_liquidation_usd": 5157.71,
+        "drop_to_liquidation_pct": 49.6,
+        "supplied": [
+          {
+            "symbol": "wstETH",
+            "token": "aArbwstETH",
+            "qty": 1.8089114961745445,
+            "value_usd": 4789.69,
+            "apy_pct": 0.000155,
+            "is_collateral": true
+          },
+          {
+            "symbol": "USDC",
+            "token": "aArbUSDCn",
+            "qty": 3900.975089,
+            "value_usd": 3900.98,
+            "apy_pct": 1.489,
+            "is_collateral": true
+          },
+          {
+            "symbol": "WETH",
+            "token": "aArbWETH",
+            "qty": 0.7841080715519922,
+            "value_usd": 1688.05,
+            "apy_pct": 1.705,
+            "is_collateral": true
+          }
+        ],
+        "borrowed": [
+          {
+            "symbol": "USDC",
+            "token": "variableDebtArbUSDCn",
+            "qty": 2589.516834,
+            "value_usd": 2589.52,
+            "apy_pct": 2.739,
+            "is_variable": true
+          },
+          {
+            "symbol": "USDT",
+            "token": "variableDebtArbUSDT",
+            "qty": 1567.656143,
+            "value_usd": 1567.66,
+            "apy_pct": 2.825,
+            "is_variable": true
+          }
+        ]
+      },
+      "uniswap_v3_lp": {
+        "protocol": "Uniswap v3",
+        "chain": "arbitrum",
+        "nft_manager": "0xC36442b4a4522E871399CD717aBDD847Ab11FE88",
+        "current_eth_price_usd": 2156.33,
+        "current_tick": -199559,
+        "pool_address": "0xc6962004f452be9203591991d15f6b388e09e8d0",
+        "total_positions": 7,
+        "active_positions": 3,
+        "total_lp_value_usd": 2104.18,
+        "total_unclaimed_fees_usd": 14.37,
+        "positions": [
+          {
+            "token_id": 5178404,
+            "pair": "WETH/USDT",
+            "fee_tier": "0.05%",
+            "tick_lower": -197390,
+            "tick_upper": -195710,
+            "liquidity": 0,
+            "status": "CLOSED",
+            "value_usd": 0
+          },
+          {
+            "token_id": 5223124,
+            "pair": "WETH/USDC",
+            "fee_tier": "0.05%",
+            "tick_lower": -196020,
+            "tick_upper": -194780,
+            "liquidity": 0,
+            "status": "CLOSED",
+            "value_usd": 0
+          },
+          {
+            "token_id": 5226114,
+            "pair": "ARB/USDC",
+            "fee_tier": "0.05%",
+            "tick_lower": -292930,
+            "tick_upper": -290190,
+            "liquidity": 0,
+            "status": "CLOSED",
+            "value_usd": 0
+          },
+          {
+            "token_id": 5242734,
+            "pair": "WETH/USDC",
+            "fee_tier": "0.05%",
+            "tick_lower": -198260,
+            "tick_upper": -195850,
+            "liquidity": 0,
+            "status": "CLOSED",
+            "value_usd": 0
+          },
+          {
+            "token_id": 5259758,
+            "pair": "WETH/USDC",
+            "fee_tier": "0.05%",
+            "tick_lower": -199740,
+            "tick_upper": -197620,
+            "price_lower_usd": 2117.56,
+            "price_upper_usd": 2617.59,
+            "liquidity": 93272301994981,
+            "status": "IN_RANGE",
+            "value_usd": 627.82,
+            "unclaimed_fees_usd": 6.19,
+            "weth_amount": 0.09346760009034032,
+            "usdc_amount": 420.402958
+          },
+          {
+            "token_id": 5285405,
+            "pair": "WETH/USDC",
+            "fee_tier": "0.05%",
+            "tick_lower": -203490,
+            "tick_upper": -199730,
+            "price_lower_usd": 1455.4,
+            "price_upper_usd": 2119.68,
+            "liquidity": 130493916711570,
+            "status": "OUT_OF_RANGE",
+            "value_usd": 1030.18,
+            "unclaimed_fees_usd": 0.55,
+            "weth_amount": 0,
+            "usdc_amount": 1029.633217
+          },
+          {
+            "token_id": 5365472,
+            "pair": "WETH/USDC",
+            "fee_tier": "0.05%",
+            "tick_lower": -200740,
+            "tick_upper": -199000,
+            "price_lower_usd": 1916.06,
+            "price_upper_usd": 2280.19,
+            "liquidity": 157763323616518,
+            "status": "IN_RANGE",
+            "value_usd": 446.18,
+            "unclaimed_fees_usd": 7.62,
+            "weth_amount": 0.18548775692514058,
+            "usdc_amount": 39.23398
+          }
+        ]
+      }
+    },
+    "ethereum": {
+      "wallet_assets": [
+        {
+          "symbol": "ETH",
+          "qty": 0.0163575060077827,
+          "value_usd": 35.27,
+          "chain": "ethereum",
+          "type": "wallet"
+        }
+      ],
+      "aave_v3": {
+        "protocol": "Aave v3",
+        "chain": "ethereum",
+        "health_factor": null,
+        "note": "No active positions on Ethereum Aave v3 (all zeros)"
+      }
+    },
+    "optimism": {
+      "wallet_assets": [
+        {
+          "symbol": "OP",
+          "qty": 106.70609064,
+          "value_usd": 13.13,
+          "chain": "optimism",
+          "type": "wallet"
+        }
+      ]
+    },
+    "base": {
+      "wallet_assets": [
+        {
+          "symbol": "USDC",
+          "qty": 1.329384,
+          "value_usd": 1.33,
+          "chain": "base",
+          "type": "wallet"
+        },
+        {
+          "symbol": "ETH",
+          "qty": 0.0003426551557418,
+          "value_usd": 0.74,
+          "chain": "base",
+          "type": "wallet"
+        }
+      ]
+    },
+    "aptos": {
+      "source": "manual/aave-ui",
+      "note": "Aptos positions via Object Model (CoinStore empty). Data from Aave UI.",
+      "aave_v3": {
+        "protocol": "Aave v3",
+        "chain": "aptos",
+        "total_collateral_usd": 2147.15,
+        "net_position_usd": 2147.0,
+        "apy_pct": 4.68,
+        "supplied": [
+          {
+            "symbol": "APT",
+            "value_usd": 141.89,
+            "source": "manual/aave-ui"
+          },
+          {
+            "symbol": "USDC",
+            "value_usd": 2005.26,
+            "source": "manual/aave-ui"
+          }
+        ],
+        "borrowed": []
+      }
+    }
+  },
+  "portfolio_breakdown": {
+    "wallet_assets_usd": 10621.63,
+    "aave_arb_net_usd": 6234.24,
+    "uniswap_lp_usd": 2104.18,
+    "aptos_aave_usd": 2147.0,
+    "unclaimed_fees_usd": 14.37,
+    "total_usd": 21107.05
+  },
+  "risks": {
+    "health_factor": 1.9857,
+    "health_factor_status": "SAFE",
+    "health_factor_threshold": 1.0,
+    "liquidation_risk": "LOW",
+    "drop_to_liquidation_pct": 49.6,
+    "lp_out_of_range_count": 1,
+    "lp_in_range_count": 2,
+    "lp_closed_count": 4,
+    "alerts": [
+      {
+        "level": "INFO",
+        "message": "LP position #5285405 (WETH/USDC) is OUT OF RANGE. Current ETH price $2156 is above upper bound $2119.68. Position is 100% USDC."
+      },
+      {
+        "level": "INFO",
+        "message": "Health Factor 1.99 — safe zone. Drop of 49.6% needed to trigger liquidation."
+      }
+    ]
+  },
+  "prices": {
+    "ETH": 2156.33,
+    "WETH": 2156.33,
+    "wstETH": 2647.83,
+    "USDC": 1.0,
+    "USDT": 1.0,
+    "ARB": 0.0999,
+    "OP": 0.123,
+    "APT": 5.68,
+    "source": "moralis/zerion/alchemy"
+  }
+};
+</script>
+<!-- DATA_INJECT_END -->
+</body>
+</html>
